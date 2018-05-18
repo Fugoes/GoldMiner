@@ -36,7 +36,12 @@ public class GUI {
         this.frame.setSize(1000, 1000);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setVisible(true);
-        this.timer.schedule(new GUI.RefreshTimer(), 0, 1000 / 10);
+        this.timer.schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                GUI.this.frame.repaint();
+            }
+        }, 0, 1000 / 10);
     }
 
     class Frame extends JFrame {
@@ -58,13 +63,6 @@ public class GUI {
             State state = State.getSnapshot();
             state.traverseHook(hook -> hook.paint(bufferedG, time));
             g.drawImage(GUI.this.image, 0, 0, width, height, this);
-        }
-    }
-
-    class RefreshTimer extends java.util.TimerTask {
-        @Override
-        public void run() {
-            GUI.this.frame.repaint();
         }
     }
 
