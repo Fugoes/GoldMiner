@@ -1,5 +1,6 @@
 package util;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -55,5 +56,9 @@ public class ImageTools {
         coo.x = newX;
         coo.y = newY;
         return dst;
+    }
+
+    public static BufferedImage getImageFromRes(String name) {
+        return FP.liftExp(() -> ImageIO.read(ImageTools.class.getResource(name))).get().get();
     }
 }
