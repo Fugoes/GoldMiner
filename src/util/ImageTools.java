@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 public class ImageTools {
     /**
      * Shrink src to new image with width x height.
+     *
      * @param src
      * @param width
      * @param height
