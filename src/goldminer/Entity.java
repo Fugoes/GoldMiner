@@ -1,6 +1,8 @@
 package goldminer;
 
-public abstract class Entity {
+import util.Copyable;
+
+public abstract class Entity implements Copyable {
     int x;
     int y;
     int radius;

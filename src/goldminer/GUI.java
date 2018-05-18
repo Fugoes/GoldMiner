@@ -12,7 +12,6 @@ public class GUI {
     class Frame extends JFrame {
         Frame() {
             super("Gold Miner");
-
         }
 
         @Override
