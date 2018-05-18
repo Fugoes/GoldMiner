@@ -18,7 +18,7 @@ public class GUI {
         void paint(Graphics g, long time);
     }
 
-    GUI() {
+    GUI(int FPS) {
         this.frame = new Frame();
         this.frame.addComponentListener(new ComponentAdapter() {
             @Override
@@ -41,7 +41,7 @@ public class GUI {
             public void run() {
                 GUI.this.frame.repaint();
             }
-        }, 0, 1000 / 10);
+        }, 0, 1000 / FPS);
     }
 
     class Frame extends JFrame {
@@ -61,6 +61,7 @@ public class GUI {
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
             long time = Calendar.getInstance().getTimeInMillis();
             State state = State.getSnapshot();
+            state.traverseEntities(entity -> entity.paint(bufferedG, time));
             state.traverseHook(hook -> hook.paint(bufferedG, time));
             g.drawImage(GUI.this.image, 0, 0, width, height, this);
         }

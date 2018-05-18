@@ -17,6 +17,7 @@ public class State {
     public void init() {
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
+        this.entities.add(new Rock(400, 800));
     }
 
     public void move(int playerID, long time) {
@@ -41,6 +42,12 @@ public class State {
     public void traverseHook(Consumer<Hook> func) {
         for (Hook hook : this.hooks) {
             func.accept(hook);
+        }
+    }
+
+    public void traverseEntities(Consumer<Entity> func) {
+        for (Entity entity : this.entities) {
+            func.accept(entity);
         }
     }
 }

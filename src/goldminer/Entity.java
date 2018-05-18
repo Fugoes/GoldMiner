@@ -1,6 +1,6 @@
 package goldminer;
 
-public abstract class Entity implements Cloneable {
+public abstract class Entity implements Cloneable, GUI.Paintable {
     int x;
     int y;
     int radius;

@@ -7,8 +7,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Hook implements Cloneable, GUI.Paintable {
+    static final int MAX_DEGREE = 88;
     static final BufferedImage IMAGE
-            = ImageTools.shrinkTo(ImageTools.getImageFromRes("/hook.png"), 80, 50);
+            = ImageTools.shrinkTo(ImageTools.getImageFromRes("/hook.png"), 70, 50);
 
     int x;
     int y;
@@ -39,9 +40,9 @@ public class Hook implements Cloneable, GUI.Paintable {
         return result;
     }
 
-    private double getRadByTime(long time) {
+    double getRadByTime(long time) {
         time %= 2000;
         time = time > 1000 ? 2000 - time : time;
-        return Math.atan((-500 + time) / 150.0);
+        return ((Hook.MAX_DEGREE * time * time * (1500 - time) / 250000 - Hook.MAX_DEGREE * 1000) / 180000.0) * Math.PI;
     }
 }
