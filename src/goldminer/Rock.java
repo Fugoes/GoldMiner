@@ -4,7 +4,7 @@ import util.ImageTools;
 
 import java.awt.image.BufferedImage;
 
-public class Rock extends Entity<Rock> {
+public class Rock extends Entity {
     static final int RADIUS = 70;
     static final BufferedImage IMAGE = ImageTools.shrinkTo(ImageTools.getImageFromRes("/rock.png"), 140, 100);
 
@@ -17,11 +17,7 @@ public class Rock extends Entity<Rock> {
     }
 
     @Override
-    public Rock copy() {
-        Rock result = new Rock();
-        result.x = super.x;
-        result.y = super.y;
-        result.radius = super.radius;
-        return result;
+    protected Rock clone() throws CloneNotSupportedException {
+        return (Rock) super.clone();
     }
 }

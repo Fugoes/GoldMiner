@@ -1,8 +1,6 @@
 package goldminer;
 
-import util.Copyable;
-
-public abstract class Entity implements Copyable {
+public abstract class Entity implements Cloneable {
     int x;
     int y;
     int radius;
@@ -15,5 +13,14 @@ public abstract class Entity implements Copyable {
         this.x = x;
         this.y = y;
         this.radius = radius;
+    }
+
+    @Override
+    protected Entity clone() throws CloneNotSupportedException {
+        Entity result = (Entity) super.clone();
+        result.x = this.x;
+        result.y = this.y;
+        result.radius = this.radius;
+        return result;
     }
 }
