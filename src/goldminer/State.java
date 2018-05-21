@@ -57,6 +57,34 @@ public class State {
         }
     }
 
+    public static State getSnapshot() {
+        State result = new State();
+        synchronized (State.instance) {
+            for (Entity entity : State.instance.entities) {
+                result.entities.add(FP.liftExp(entity::clone).get().get());
+            }
+            result.hooks[0] = FP.liftExp(() -> State.instance.hooks[0].clone()).get().get();
+            result.hooks[1] = FP.liftExp(() -> State.instance.hooks[1].clone()).get().get();
+        }
+        return result;
+    }
+
+    public static State getInstance() {
+        return State.instance;
+    }
+
+    public void traverseHook(Consumer<Hook> func) {
+        for (Hook hook : this.hooks) {
+            func.accept(hook);
+        }
+    }
+
+    public void traverseEntities(Consumer<Entity> func) {
+        for (Entity entity : this.entities) {
+            func.accept(entity);
+        }
+    }
+
     private void moveEmpty(Hook hook) {
         int distance = hook.getMaxDistance(hook.pendingRad);
         long delta = (long) (distance / Hook.DOWN_SPEED);
@@ -100,33 +128,5 @@ public class State {
             }
         });
         return rs;
-    }
-
-    public static State getSnapshot() {
-        State result = new State();
-        synchronized (State.instance) {
-            for (Entity entity : State.instance.entities) {
-                result.entities.add(FP.liftExp(entity::clone).get().get());
-            }
-            result.hooks[0] = FP.liftExp(() -> State.instance.hooks[0].clone()).get().get();
-            result.hooks[1] = FP.liftExp(() -> State.instance.hooks[1].clone()).get().get();
-        }
-        return result;
-    }
-
-    public static State getInstance() {
-        return State.instance;
-    }
-
-    public void traverseHook(Consumer<Hook> func) {
-        for (Hook hook : this.hooks) {
-            func.accept(hook);
-        }
-    }
-
-    public void traverseEntities(Consumer<Entity> func) {
-        for (Entity entity : this.entities) {
-            func.accept(entity);
-        }
     }
 }
