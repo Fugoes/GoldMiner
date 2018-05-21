@@ -32,19 +32,6 @@ public class GoldMax extends Entity {
     }
 
     @Override
-    int getDistance(Hook hook, double rad) {
-        int deltaX = this.x - hook.x;
-        int deltaY = this.y - hook.y;
-        double distance = Math.abs((deltaX + Math.tan(rad) * deltaY) * Math.cos(rad));
-        if (distance < this.radius + Hook.IMAGE.getWidth() / 3) {
-            int r = (int) Math.sqrt((double) (deltaX * deltaX + deltaY * deltaY));
-            return r - Hook.IMAGE.getHeight() / 2;
-        } else {
-            return -1;
-        }
-    }
-
-    @Override
     public BufferedImage getIMAGE() {
         return GoldMax.IMAGE;
     }
