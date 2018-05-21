@@ -27,7 +27,6 @@ public class State {
             Hook anotherHook = this.hooks[1 - playerID];
             if (time >= hook.pendingEndTime + 200) {
                 hook.pendingRad = hook.getRadByTime(time);
-                hook.zeroTime = hook.pendingEndTime + 200 - hook.pendingBeginTime;
                 hook.pendingBeginTime = time;
                 Vector<Tuple2<Long, Integer>> rs = this.getPossibleEntities(hook);
                 if (rs.size() == 0) {

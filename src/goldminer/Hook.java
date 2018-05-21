@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
  * pendingBeginTime + 200     ms ~ pendingIntersectTime       ms : move down
  * pendingIntersectTime       ms ~ pendingIntersectTime + 200 ms : freeze
  * pendingIntersectTime + 200 ms ~ pendingEndTime             ms : move up
+ * pendingEndTime             ms ~ pendingEndTime + 200       ms : freeze
  * <p>
  * using pendingBeginTime as flag
  */
@@ -23,7 +24,6 @@ public class Hook implements Cloneable, GUI.Paintable {
 
     int x;
     int y;
-    long zeroTime;
     long pendingBeginTime;
     long pendingIntersectTime;
     long pendingEndTime;
@@ -34,10 +34,9 @@ public class Hook implements Cloneable, GUI.Paintable {
     Hook(int x, int y) {
         this.x = x;
         this.y = y;
-        this.zeroTime = 0;
         this.pendingBeginTime = 0;
         this.pendingIntersectTime = 0;
-        this.pendingEndTime = 0;
+        this.pendingEndTime = -200;
     }
 
     @Override
@@ -54,9 +53,9 @@ public class Hook implements Cloneable, GUI.Paintable {
             double rad = this.pendingRad;
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
             BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, rad, c);
-            if (time <= this.pendingBeginTime + 200) {
+            if (time < this.pendingBeginTime + 200) {
                 g.drawImage(image, this.x - c.x, this.y - c.y, null);
-            } else if (time <= this.pendingIntersectTime) {
+            } else if (time < this.pendingIntersectTime) {
                 int len = (int) ((time - this.pendingBeginTime - 200) * Hook.DOWN_SPEED);
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
@@ -65,7 +64,7 @@ public class Hook implements Cloneable, GUI.Paintable {
                 g2.setColor(Color.BLACK);
                 g2.setStroke(new BasicStroke(5));
                 g2.draw(new Line2D.Float(this.x, this.y, this.x + deltaX, this.y + deltaY));
-            } else if (time <= this.pendingIntersectTime + 200) {
+            } else if (time < this.pendingIntersectTime + 200) {
                 int len = (int) ((this.pendingIntersectTime - this.pendingBeginTime - 200) * Hook.DOWN_SPEED);
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
@@ -74,7 +73,7 @@ public class Hook implements Cloneable, GUI.Paintable {
                 g2.setColor(Color.BLACK);
                 g2.setStroke(new BasicStroke(5));
                 g2.draw(new Line2D.Float(this.x, this.y, this.x + deltaX, this.y + deltaY));
-            } else if (time <= this.pendingEndTime) {
+            } else if (time < this.pendingEndTime) {
                 int totalLen = (int) ((this.pendingIntersectTime - this.pendingBeginTime - 200) * Hook.DOWN_SPEED);
                 int len = (int) (totalLen * (this.pendingEndTime - time)
                         / (this.pendingEndTime - 200 - this.pendingIntersectTime));
@@ -85,7 +84,7 @@ public class Hook implements Cloneable, GUI.Paintable {
                 g2.setColor(Color.BLACK);
                 g2.setStroke(new BasicStroke(5));
                 g2.draw(new Line2D.Float(this.x, this.y, this.x + deltaX, this.y + deltaY));
-            } else {
+            } else if (time < this.pendingEndTime + 200) {
                 g.drawImage(image, this.x - c.x, this.y - c.y, null);
             }
         }
@@ -96,7 +95,6 @@ public class Hook implements Cloneable, GUI.Paintable {
         Hook result = (Hook) super.clone();
         result.x = this.x;
         result.y = this.y;
-        result.zeroTime = this.zeroTime;
         result.pendingBeginTime = this.pendingBeginTime;
         result.pendingIntersectTime = this.pendingIntersectTime;
         result.pendingEndTime = this.pendingEndTime;
@@ -105,10 +103,11 @@ public class Hook implements Cloneable, GUI.Paintable {
     }
 
     double getRadByTime(long time) {
-        if (time >= this.pendingBeginTime && time < this.pendingEndTime) {
+        assert time >= this.pendingBeginTime;
+        if (time >= this.pendingBeginTime && time < this.pendingEndTime + 200) {
             return this.pendingRad;
         } else {
-            time = time - this.zeroTime;
+            time = time - this.pendingEndTime - 200 + 1000;
         }
         time %= 2000;
         time = time > 1000 ? 2000 - time : time;
