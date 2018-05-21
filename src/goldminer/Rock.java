@@ -25,4 +25,16 @@ public class Rock extends Entity {
     public void paint(Graphics g, long time) {
         g.drawImage(Rock.IMAGE, this.x - Rock.IMAGE.getWidth() / 2, this.y - Rock.IMAGE.getHeight() / 2, null);
     }
+
+    @Override
+    long getIntersectTime(Hook hook, double rad) {
+        int deltaX = this.x - hook.x;
+        int deltaY = this.y - hook.y;
+        double dis = Math.abs((x + Math.tan(rad) * y) * Math.cos(rad));
+        if (dis < this.radius) {
+            return (int) (Math.sqrt((double) (deltaX * deltaX + deltaY * deltaY)) / Hook.DOWN_SPEED);
+        } else {
+            return -1;
+        }
+    }
 }

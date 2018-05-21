@@ -1,7 +1,9 @@
 package goldminer;
 
 import util.FP;
+import util.Tuple2;
 
+import java.util.Comparator;
 import java.util.Vector;
 import java.util.function.Consumer;
 
@@ -21,6 +23,17 @@ public class State {
     }
 
     public void move(int playerID, long time) {
+        Vector<Tuple2<Long, Integer>> vector = new Vector<>();
+        for (int i = 0; i < this.entities.size(); i++) {
+            Entity entity = this.entities.get(i);
+            if (!entity.taken) {
+                long intersectTime = entity.getIntersectTime(this.hooks[playerID], time);
+                if (intersectTime >= 0) {
+                    vector.add(new Tuple2<>(intersectTime, i));
+                }
+            }
+        }
+        vector.sort(Comparator.comparing(o -> o.t1));
     }
 
     public static State getSnapshot() {

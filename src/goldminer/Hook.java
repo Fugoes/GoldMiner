@@ -10,23 +10,24 @@ public class Hook implements Cloneable, GUI.Paintable {
     static final int MAX_DEGREE = 88;
     static final BufferedImage IMAGE
             = ImageTools.shrinkTo(ImageTools.getImageFromRes("/hook.png"), 70, 50);
+    static final int DOWN_SPEED = 1;
 
     int x;
     int y;
-    long time;
+    long zeroTime;
     long beginTime;
 
     Hook(int x, int y) {
         this.x = x;
         this.y = y;
-        this.time = 0;
+        this.zeroTime = 0;
         this.beginTime = -1;
     }
 
     @Override
     public void paint(Graphics g, long time) {
         Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
-        BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.getRadByTime(time - this.time), c);
+        BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.getRadByTime(time - this.zeroTime), c);
         g.drawImage(image, this.x - c.x, this.y - c.y, null);
     }
 
@@ -35,7 +36,7 @@ public class Hook implements Cloneable, GUI.Paintable {
         Hook result = (Hook) super.clone();
         result.x = this.x;
         result.y = this.y;
-        result.time = this.time;
+        result.zeroTime = this.zeroTime;
         result.beginTime = this.beginTime;
         return result;
     }

@@ -4,6 +4,7 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
     int x;
     int y;
     int radius;
+    boolean taken;
 
     Entity() {
 
@@ -13,6 +14,7 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.taken = false;
     }
 
     @Override
@@ -21,6 +23,9 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
         result.x = this.x;
         result.y = this.y;
         result.radius = this.radius;
+        result.taken = this.taken;
         return result;
     }
+
+    abstract long getIntersectTime(Hook hook, double rad);
 }
