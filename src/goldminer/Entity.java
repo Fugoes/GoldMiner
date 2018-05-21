@@ -10,7 +10,6 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
     long takenTime;
 
     Entity() {
-
     }
 
     Entity(int x, int y, int speedFactor, int radius) {

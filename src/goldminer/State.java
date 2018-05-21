@@ -19,6 +19,7 @@ public class State {
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
         this.entities.add(new Rock(600, 500));
+        this.entities.add(new GoldMax(1000, 500));
     }
 
     public void move(int playerID, long time) {
