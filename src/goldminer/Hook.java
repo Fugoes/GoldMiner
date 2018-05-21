@@ -41,7 +41,7 @@ public class Hook implements Cloneable, GUI.Paintable {
     }
 
     @Override
-    public void paint(Graphics g, long time) {
+    public void paint(Graphics g, State state, long time) {
         if (time < this.pendingBeginTime) {
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
             BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.pendingRad, c);
@@ -69,6 +69,10 @@ public class Hook implements Cloneable, GUI.Paintable {
                 int len = (int) ((this.pendingIntersectTime - this.pendingBeginTime - 200) * Hook.DOWN_SPEED);
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
+                if (this.pendingEntityId >= 0) {
+                    g.drawImage(state.entities.get(this.pendingEntityId).getIMAGE(),
+                            this.x - c.x + deltaX, this.y - c.y + deltaY, null);
+                }
                 g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setColor(Color.BLACK);
@@ -80,6 +84,10 @@ public class Hook implements Cloneable, GUI.Paintable {
                         / (this.pendingEndTime - 200 - this.pendingIntersectTime));
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
+                if (this.pendingEntityId >= 0) {
+                    g.drawImage(state.entities.get(this.pendingEntityId).getIMAGE(),
+                            this.x - c.x + deltaX, this.y - c.y + deltaY, null);
+                }
                 g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setColor(Color.BLACK);

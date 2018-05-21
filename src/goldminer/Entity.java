@@ -1,11 +1,13 @@
 package goldminer;
 
+import java.awt.image.BufferedImage;
+
 public abstract class Entity implements Cloneable, GUI.Paintable {
     int x;
     int y;
     int radius;
     int speedFactor;
-    boolean taken;
+    long takenTime;
 
     Entity() {
 
@@ -16,7 +18,7 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
         this.y = y;
         this.radius = radius;
         this.speedFactor = speedFactor;
-        this.taken = false;
+        this.takenTime = Long.MAX_VALUE;
     }
 
     @Override
@@ -26,9 +28,11 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
         result.y = this.y;
         result.radius = this.radius;
         result.speedFactor = this.speedFactor;
-        result.taken = this.taken;
+        result.takenTime = this.takenTime;
         return result;
     }
 
     abstract int getDistance(Hook hook, double rad);
+
+    abstract BufferedImage getIMAGE();
 }

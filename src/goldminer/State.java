@@ -99,6 +99,7 @@ public class State {
         System.out.println(this.entities.get(t.t2).speedFactor);
         hook.pendingEndTime = hook.pendingIntersectTime + 200 + delta * this.entities.get(t.t2).speedFactor;
         hook.pendingEntityId = t.t2;
+        this.entities.get(hook.pendingEntityId).takenTime = hook.pendingIntersectTime;
     }
 
     /**
@@ -111,7 +112,7 @@ public class State {
         Vector<Tuple2<Long, Integer>> rs = new Vector<>();
         for (int i = 0; i < this.entities.size(); i++) {
             Entity entity = this.entities.get(i);
-            if (!entity.taken) {
+            if (!(entity.takenTime < hook.pendingBeginTime)) {
                 int distance = entity.getDistance(hook, hook.pendingRad);
                 if (distance != -1) {
                     rs.add(new Tuple2<>(hook.pendingBeginTime + 200 + (int) (distance / Hook.DOWN_SPEED), i));

@@ -17,7 +17,7 @@ public class GUI {
     Frame frame;
 
     interface Paintable {
-        void paint(Graphics g, long time);
+        void paint(Graphics g, State state, long time);
     }
 
     GUI(int FPS) {
@@ -72,8 +72,8 @@ public class GUI {
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
             long time = Calendar.getInstance().getTimeInMillis();
             State state = State.getSnapshot();
-            state.traverseEntities(entity -> entity.paint(bufferedG, time));
-            state.traverseHook(hook -> hook.paint(bufferedG, time));
+            state.traverseEntities(entity -> entity.paint(bufferedG, state, time));
+            state.traverseHook(hook -> hook.paint(bufferedG, state, time));
             g.drawImage(GUI.this.image, 0, 0, width, height, this);
         }
     }

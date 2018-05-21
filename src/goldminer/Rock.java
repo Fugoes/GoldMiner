@@ -23,8 +23,10 @@ public class Rock extends Entity {
     }
 
     @Override
-    public void paint(Graphics g, long time) {
-        g.drawImage(Rock.IMAGE, this.x - Rock.IMAGE.getWidth() / 2, this.y - Rock.IMAGE.getHeight() / 2, null);
+    public void paint(Graphics g, State state, long time) {
+        if (time < this.takenTime) {
+            g.drawImage(Rock.IMAGE, this.x - Rock.IMAGE.getWidth() / 2, this.y - Rock.IMAGE.getHeight() / 2, null);
+        }
     }
 
     @Override
@@ -38,5 +40,10 @@ public class Rock extends Entity {
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public BufferedImage getIMAGE() {
+        return Rock.IMAGE;
     }
 }
