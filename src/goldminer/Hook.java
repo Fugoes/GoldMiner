@@ -37,6 +37,7 @@ public class Hook implements Cloneable, GUI.Paintable {
         this.pendingBeginTime = 0;
         this.pendingIntersectTime = 0;
         this.pendingEndTime = -200;
+        this.pendingEntityId = -1;
     }
 
     @Override

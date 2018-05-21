@@ -96,8 +96,8 @@ public class State {
     private void moveNonEmpty(Hook hook, Tuple2<Long, Integer> t) {
         long delta = t.t1 - 200 - hook.pendingBeginTime;
         hook.pendingIntersectTime = hook.pendingBeginTime + 200 + delta;
-        hook.pendingEndTime = hook.pendingIntersectTime + 200 +
-                delta * this.entities.get(t.t2).speedFactor;
+        System.out.println(this.entities.get(t.t2).speedFactor);
+        hook.pendingEndTime = hook.pendingIntersectTime + 200 + delta * this.entities.get(t.t2).speedFactor;
         hook.pendingEntityId = t.t2;
     }
 
