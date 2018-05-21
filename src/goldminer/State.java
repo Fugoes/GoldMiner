@@ -23,6 +23,7 @@ public class State {
         this.entities.add(new GoldMid(1000, 700));
         this.entities.add(new GoldMin(1000, 900));
         this.entities.add(new Pocket(1300, 900));
+        this.entities.add(new Pig(1500, 890));
     }
 
     public void move(int playerID, long time) {

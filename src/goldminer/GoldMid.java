@@ -19,7 +19,7 @@ public class GoldMid extends Entity {
     }
 
     @Override
-    protected Entity clone() throws CloneNotSupportedException {
+    protected GoldMid clone() throws CloneNotSupportedException {
         return (GoldMid) super.clone();
     }
 
