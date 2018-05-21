@@ -30,9 +30,9 @@ public class Rock extends Entity {
     long getIntersectTime(Hook hook, double rad) {
         int deltaX = this.x - hook.x;
         int deltaY = this.y - hook.y;
-        double dis = Math.abs((x + Math.tan(rad) * y) * Math.cos(rad));
-        if (dis < this.radius) {
-            return (int) (Math.sqrt((double) (deltaX * deltaX + deltaY * deltaY)) / Hook.DOWN_SPEED);
+        double dis = Math.abs((deltaX + Math.tan(rad) * deltaY) * Math.cos(rad));
+        if (dis < this.radius + Hook.IMAGE.getWidth() / 2) {
+            return (long) ((Math.sqrt((double) (deltaX * deltaX + deltaY * deltaY)) - this.radius) / Hook.DOWN_SPEED);
         } else {
             return -1;
         }

@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.Calendar;
 
@@ -42,6 +44,15 @@ public class GUI {
                 GUI.this.frame.repaint();
             }
         }, 0, 1000 / FPS);
+        this.frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    long time = Calendar.getInstance().getTimeInMillis();
+                    State.getInstance().move(0, time);
+                }
+            }
+        });
     }
 
     class Frame extends JFrame {
