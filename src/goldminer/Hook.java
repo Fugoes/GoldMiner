@@ -7,6 +7,12 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * pendingBeginTime           ms ~ pendingBeginTime + 200     ms : freeze
+ * pendingBeginTime + 200     ms ~ pendingIntersectTime       ms : move down
+ * pendingIntersectTime       ms ~ pendingIntersectTime + 200 ms : freeze
+ * pendingIntersectTime + 200 ms ~ pendingEndTime             ms : move up
+ */
 public class Hook implements Cloneable, GUI.Paintable {
     static final int MAX_DEGREE = 88;
     static final BufferedImage IMAGE
@@ -16,8 +22,9 @@ public class Hook implements Cloneable, GUI.Paintable {
     int x;
     int y;
     long zeroTime;
-    long pendingIntersectTime;
     long pendingBeginTime;
+    long pendingIntersectTime;
+    long pendingEndTime;
 
     Entity pendingEntity;
 
@@ -31,7 +38,7 @@ public class Hook implements Cloneable, GUI.Paintable {
 
     @Override
     public void paint(Graphics g, long time) {
-        if (this.pendingBeginTime == -1 || time <= this.pendingBeginTime) {
+        if (this.isPendingAt(time)) {
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
             BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.getRadByTime(time - this.zeroTime), c);
             g.drawImage(image, this.x - c.x, this.y - c.y, null);
@@ -78,5 +85,9 @@ public class Hook implements Cloneable, GUI.Paintable {
         time %= 2000;
         time = time > 1000 ? 2000 - time : time;
         return ((Hook.MAX_DEGREE * time * time * (1500 - time) / 250000 - Hook.MAX_DEGREE * 1000) / 180000.0) * Math.PI;
+    }
+
+    private boolean isPendingAt(long time) {
+        return this.pendingBeginTime >= 0 && time <= this.pendingBeginTime;
     }
 }
