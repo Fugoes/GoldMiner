@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
  * pendingBeginTime + 200     ms ~ pendingIntersectTime       ms : move down
  * pendingIntersectTime       ms ~ pendingIntersectTime + 200 ms : freeze
  * pendingIntersectTime + 200 ms ~ pendingEndTime             ms : move up
+ * <p>
+ * using pendingBeginTime as flag
  */
 public class Hook implements Cloneable, GUI.Paintable {
     static final int MAX_DEGREE = 88;
@@ -26,19 +28,20 @@ public class Hook implements Cloneable, GUI.Paintable {
     long pendingIntersectTime;
     long pendingEndTime;
 
-    Entity pendingEntity;
+    int pendingEntityId;
 
     Hook(int x, int y) {
         this.x = x;
         this.y = y;
         this.zeroTime = 0;
-        this.pendingBeginTime = -1;
-        this.pendingIntersectTime = -1;
+        this.pendingBeginTime = 0;
+        this.pendingIntersectTime = 0;
+        this.pendingEndTime = 0;
     }
 
     @Override
     public void paint(Graphics g, long time) {
-        if (this.isPendingAt(time)) {
+        if (time < this.pendingBeginTime || time >= this.pendingEndTime) {
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
             BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.getRadByTime(time - this.zeroTime), c);
             g.drawImage(image, this.x - c.x, this.y - c.y, null);
@@ -48,7 +51,7 @@ public class Hook implements Cloneable, GUI.Paintable {
             BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, rad, c);
             if (time <= this.pendingBeginTime + 200) {
                 g.drawImage(image, this.x - c.x, this.y - c.y, null);
-            } else if (time <= this.pendingBeginTime + 200 + this.pendingIntersectTime) {
+            } else if (time <= this.pendingIntersectTime) {
                 int len = (int) ((time - this.pendingBeginTime - 200) * Hook.DOWN_SPEED);
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
@@ -57,8 +60,19 @@ public class Hook implements Cloneable, GUI.Paintable {
                 g2.setColor(Color.BLACK);
                 g2.setStroke(new BasicStroke(5));
                 g2.draw(new Line2D.Float(this.x, this.y, this.x + deltaX, this.y + deltaY));
+            } else if (time <= this.pendingIntersectTime + 200) {
+                int len = (int) ((this.pendingIntersectTime - this.pendingBeginTime - 200) * Hook.DOWN_SPEED);
+                int deltaX = (int) (len * Math.sin(-rad));
+                int deltaY = (int) (len * Math.cos(-rad));
+                g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setColor(Color.BLACK);
+                g2.setStroke(new BasicStroke(5));
+                g2.draw(new Line2D.Float(this.x, this.y, this.x + deltaX, this.y + deltaY));
             } else {
-                int len = (int) (this.pendingIntersectTime * Hook.DOWN_SPEED);
+                int totalLen = (int) ((this.pendingIntersectTime - this.pendingBeginTime - 200) * Hook.DOWN_SPEED);
+                int len = (int) (totalLen * (this.pendingEndTime - time)
+                        / (this.pendingIntersectTime - 200 - this.pendingBeginTime));
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
                 g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);
@@ -78,6 +92,7 @@ public class Hook implements Cloneable, GUI.Paintable {
         result.zeroTime = this.zeroTime;
         result.pendingBeginTime = this.pendingBeginTime;
         result.pendingIntersectTime = this.pendingIntersectTime;
+        result.pendingEndTime = this.pendingEndTime;
         return result;
     }
 
@@ -87,7 +102,17 @@ public class Hook implements Cloneable, GUI.Paintable {
         return ((Hook.MAX_DEGREE * time * time * (1500 - time) / 250000 - Hook.MAX_DEGREE * 1000) / 180000.0) * Math.PI;
     }
 
-    private boolean isPendingAt(long time) {
-        return this.pendingBeginTime >= 0 && time <= this.pendingBeginTime;
+    public int getMaxDistance(Double rad) {
+        double rad0 = Math.atan((double) this.x / (double) (1080 - this.y));
+        double rad1 = Math.atan((double) (1920 - this.x) / (double) (1080 - this.y));
+        int r;
+        if (rad < rad0 && rad > -rad1) {
+            r = (int) (this.x / Math.cos(rad));
+        } else if (rad >= rad0) {
+            r = (int) (this.x / Math.sin(rad));
+        } else {
+            r = (int) ((1920 - this.x) / Math.sin(-rad));
+        }
+        return r - Hook.IMAGE.getHeight() * 3 / 2;
     }
 }

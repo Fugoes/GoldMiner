@@ -30,5 +30,5 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
         return result;
     }
 
-    abstract long getIntersectTime(Hook hook, double rad);
+    abstract int getDistance(Hook hook, double rad);
 }

@@ -3,9 +3,6 @@ package goldminer;
 import util.FP;
 import util.Tuple2;
 
-import java.nio.file.attribute.AclEntryType;
-import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Vector;
 import java.util.function.Consumer;
 
@@ -25,43 +22,84 @@ public class State {
     }
 
     public void move(int playerID, long time) {
-        //       0 ms ~     200 ms : hook freeze
-        //     200 ms ~ 200 + k ms : hook down
-        // 200 + k ms ~ 400 + k ms : hook freeze
-        // 400 + k ms ~            : hook up
         synchronized (this) {
-            if (this.hooks[playerID].pendingBeginTime == -1) {
-                if (this.calcPossibleEntityIntersectTime(playerID, time)) {
-                    this.hooks[playerID].pendingBeginTime = time;
+            Hook hook = this.hooks[playerID];
+            Hook anotherHook = this.hooks[1 - playerID];
+            if (time >= hook.pendingEndTime) {
+                hook.zeroTime = hook.pendingEndTime - hook.pendingBeginTime;
+                hook.pendingBeginTime = time;
+                Vector<Tuple2<Long, Integer>> rs = this.getPossibleEntities(hook);
+                if (rs.size() == 0) {
+                    this.moveEmpty(hook);
                 } else {
-                    this.hooks[playerID].pendingBeginTime = -1;
+                    if (anotherHook.pendingEntityId == rs.get(0).t2) {
+                        if (anotherHook.pendingIntersectTime < rs.get(0).t1) {
+                            if (rs.size() > 1) {
+                                this.moveNonEmpty(hook, rs.get(1));
+                            } else {
+                                this.moveEmpty(hook);
+                            }
+                        } else {
+                            this.moveNonEmpty(hook, rs.get(0));
+                            Vector<Tuple2<Long, Integer>> rsp = this.getPossibleEntities(anotherHook);
+                            assert rsp.size() >= 1;
+                            if (rsp.size() == 1) {
+                                this.moveEmpty(anotherHook);
+                            } else {
+                                this.moveNonEmpty(anotherHook, rsp.get(1));
+                            }
+                        }
+                    } else {
+                        this.moveNonEmpty(hook, rs.get(0));
+                    }
                 }
             }
         }
     }
 
-    public boolean calcPossibleEntityIntersectTime(int playerID, long time) {
-        long min = Integer.MAX_VALUE;
-        Entity minEntity = null;
-        Hook hook = this.hooks[playerID];
-        for (Entity entity : this.entities) {
+    private void moveEmpty(Hook hook) {
+        int distance = hook.getMaxDistance(hook.getRadByTime(hook.pendingBeginTime - hook.zeroTime));
+        long delta = (long) (distance / Hook.DOWN_SPEED);
+        hook.pendingIntersectTime = hook.pendingBeginTime + 200 + delta;
+        hook.pendingEndTime = hook.pendingIntersectTime + 200 + delta;
+        hook.pendingEntityId = -1;
+    }
+
+    private void moveNonEmpty(Hook hook, Tuple2<Long, Integer> t) {
+        long delta = t.t1 - 200 - hook.pendingBeginTime;
+        hook.pendingIntersectTime = hook.pendingBeginTime + 200 + delta;
+        hook.pendingEndTime = hook.pendingIntersectTime + 200 +
+                delta * this.entities.get(t.t2).speedFactor;
+        hook.pendingEntityId = t.t2;
+    }
+
+    /**
+     * assume hook.zeroTime and hook.pendingBeginTime are set.
+     *
+     * @param hook
+     * @return
+     */
+    private Vector<Tuple2<Long, Integer>> getPossibleEntities(Hook hook) {
+        Vector<Tuple2<Long, Integer>> rs = new Vector<>();
+        for (int i = 0; i < this.entities.size(); i++) {
+            Entity entity = this.entities.get(i);
             if (!entity.taken) {
-                long intersectTime = entity.getIntersectTime(hook, hook.getRadByTime(time - hook.zeroTime));
-                if (intersectTime != -1 && intersectTime < min) {
-                    min = intersectTime;
-                    minEntity = entity;
+                int distance = entity.getDistance(hook, hook.getRadByTime(hook.pendingBeginTime - hook.zeroTime));
+                if (distance != -1) {
+                    rs.add(new Tuple2<>(hook.pendingBeginTime + 200 + (int) (distance / Hook.DOWN_SPEED), i));
                 }
             }
         }
-        if (min < Integer.MAX_VALUE) {
-            this.hooks[playerID].pendingIntersectTime = min;
-            this.hooks[playerID].pendingEntity = minEntity;
-            return true;
-        } else {
-            this.hooks[playerID].pendingIntersectTime = -1;
-            this.hooks[playerID].pendingEntity = null;
-            return false;
-        }
+        rs.sort((o1, o2) -> {
+            if (o1.t1 < o2.t1) {
+                return -1;
+            } else if (o1.t1 > o2.t1) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        return rs;
     }
 
     public static State getSnapshot() {

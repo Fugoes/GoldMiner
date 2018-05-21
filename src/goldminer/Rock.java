@@ -6,11 +6,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Rock extends Entity {
-    static final int RADIUS = 70;
+    static final int RADIUS = 80;
+    static final int SPEED_FACTOR = 5;
     static final BufferedImage IMAGE = ImageTools.shrinkTo(ImageTools.getImageFromRes("/rock.png"), 140, 100);
 
     Rock(int x, int y) {
-        super(x, y, Rock.RADIUS);
+        super(x, y, Rock.RADIUS, Rock.SPEED_FACTOR);
     }
 
     private Rock() {
@@ -27,12 +28,13 @@ public class Rock extends Entity {
     }
 
     @Override
-    long getIntersectTime(Hook hook, double rad) {
+    int getDistance(Hook hook, double rad) {
         int deltaX = this.x - hook.x;
         int deltaY = this.y - hook.y;
-        double dis = Math.abs((deltaX + Math.tan(rad) * deltaY) * Math.cos(rad));
-        if (dis < this.radius + Hook.IMAGE.getWidth() / 2) {
-            return (long) ((Math.sqrt((double) (deltaX * deltaX + deltaY * deltaY)) - this.radius) / Hook.DOWN_SPEED);
+        double distance = Math.abs((deltaX + Math.tan(rad) * deltaY) * Math.cos(rad));
+        if (distance < this.radius + Hook.IMAGE.getWidth() / 2) {
+            int r = (int) Math.sqrt((double) (deltaX * deltaX + deltaY * deltaY));
+            return r - this.radius - Hook.IMAGE.getHeight() / 2;
         } else {
             return -1;
         }
