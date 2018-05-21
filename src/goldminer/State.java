@@ -25,8 +25,9 @@ public class State {
         synchronized (this) {
             Hook hook = this.hooks[playerID];
             Hook anotherHook = this.hooks[1 - playerID];
-            if (time >= hook.pendingEndTime) {
-                hook.zeroTime = hook.pendingEndTime - hook.pendingBeginTime;
+            if (time >= hook.pendingEndTime + 200) {
+                hook.pendingRad = hook.getRadByTime(time);
+                hook.zeroTime = hook.pendingEndTime + 200 - hook.pendingBeginTime;
                 hook.pendingBeginTime = time;
                 Vector<Tuple2<Long, Integer>> rs = this.getPossibleEntities(hook);
                 if (rs.size() == 0) {
@@ -58,7 +59,7 @@ public class State {
     }
 
     private void moveEmpty(Hook hook) {
-        int distance = hook.getMaxDistance(hook.getRadByTime(hook.pendingBeginTime - hook.zeroTime));
+        int distance = hook.getMaxDistance(hook.pendingRad);
         long delta = (long) (distance / Hook.DOWN_SPEED);
         hook.pendingIntersectTime = hook.pendingBeginTime + 200 + delta;
         hook.pendingEndTime = hook.pendingIntersectTime + 200 + delta;
@@ -84,7 +85,7 @@ public class State {
         for (int i = 0; i < this.entities.size(); i++) {
             Entity entity = this.entities.get(i);
             if (!entity.taken) {
-                int distance = entity.getDistance(hook, hook.getRadByTime(hook.pendingBeginTime - hook.zeroTime));
+                int distance = entity.getDistance(hook, hook.pendingRad);
                 if (distance != -1) {
                     rs.add(new Tuple2<>(hook.pendingBeginTime + 200 + (int) (distance / Hook.DOWN_SPEED), i));
                 }

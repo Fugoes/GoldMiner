@@ -27,6 +27,7 @@ public class Hook implements Cloneable, GUI.Paintable {
     long pendingBeginTime;
     long pendingIntersectTime;
     long pendingEndTime;
+    double pendingRad;
 
     int pendingEntityId;
 
@@ -41,12 +42,16 @@ public class Hook implements Cloneable, GUI.Paintable {
 
     @Override
     public void paint(Graphics g, long time) {
-        if (time < this.pendingBeginTime || time >= this.pendingEndTime) {
+        if (time < this.pendingBeginTime) {
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
-            BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.getRadByTime(time - this.zeroTime), c);
+            BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.pendingRad, c);
+            g.drawImage(image, this.x - c.x, this.y - c.y, null);
+        } else if (time >= this.pendingEndTime + 200) {
+            Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
+            BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.getRadByTime(time), c);
             g.drawImage(image, this.x - c.x, this.y - c.y, null);
         } else {
-            double rad = this.getRadByTime(this.pendingBeginTime - this.zeroTime);
+            double rad = this.pendingRad;
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
             BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, rad, c);
             if (time <= this.pendingBeginTime + 200) {
@@ -69,10 +74,10 @@ public class Hook implements Cloneable, GUI.Paintable {
                 g2.setColor(Color.BLACK);
                 g2.setStroke(new BasicStroke(5));
                 g2.draw(new Line2D.Float(this.x, this.y, this.x + deltaX, this.y + deltaY));
-            } else {
+            } else if (time <= this.pendingEndTime) {
                 int totalLen = (int) ((this.pendingIntersectTime - this.pendingBeginTime - 200) * Hook.DOWN_SPEED);
                 int len = (int) (totalLen * (this.pendingEndTime - time)
-                        / (this.pendingIntersectTime - 200 - this.pendingBeginTime));
+                        / (this.pendingEndTime - 200 - this.pendingIntersectTime));
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
                 g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);
@@ -80,6 +85,8 @@ public class Hook implements Cloneable, GUI.Paintable {
                 g2.setColor(Color.BLACK);
                 g2.setStroke(new BasicStroke(5));
                 g2.draw(new Line2D.Float(this.x, this.y, this.x + deltaX, this.y + deltaY));
+            } else {
+                g.drawImage(image, this.x - c.x, this.y - c.y, null);
             }
         }
     }
@@ -93,10 +100,16 @@ public class Hook implements Cloneable, GUI.Paintable {
         result.pendingBeginTime = this.pendingBeginTime;
         result.pendingIntersectTime = this.pendingIntersectTime;
         result.pendingEndTime = this.pendingEndTime;
+        result.pendingRad = this.pendingRad;
         return result;
     }
 
     double getRadByTime(long time) {
+        if (time >= this.pendingBeginTime && time < this.pendingEndTime) {
+            return this.pendingRad;
+        } else {
+            time = time - this.zeroTime;
+        }
         time %= 2000;
         time = time > 1000 ? 2000 - time : time;
         return ((Hook.MAX_DEGREE * time * time * (1500 - time) / 250000 - Hook.MAX_DEGREE * 1000) / 180000.0) * Math.PI;
