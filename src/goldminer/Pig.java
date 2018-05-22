@@ -63,4 +63,29 @@ public class Pig extends Entity {
     int getY(long time) {
         return this.y;
     }
+
+    @Override
+    int getDistance(Hook hook) {
+        double rad = hook.getRadByTime(hook.pendingBeginTime);
+        int deltaY = this.y - hook.y;
+        double rad0 = Math.atan((double) (hook.x - 60) / (double) deltaY);
+        double rad1 = Math.atan((double) (1800 - hook.x) / (double) deltaY);
+        if (rad > rad0 || rad < -rad1) {
+            return -1;
+        } else {
+            int deltaX = (int) (deltaY * Math.tan(rad));
+            int x0 = hook.x - deltaX;
+            int y0 = this.y;
+            int distance = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY) - Hook.IMAGE.getHeight() / 2;
+            long timeDelta = (long) (distance / Hook.DOWN_SPEED);
+            int x1 = this.getX(hook.pendingBeginTime + 200 + timeDelta);
+            int y1 = this.getY(hook.pendingBeginTime + 200 + timeDelta);
+            double flag = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+            if (flag < Pig.RADIUS + Hook.IMAGE.getWidth() / 3) {
+                return distance;
+            } else {
+                return -1;
+            }
+        }
+    }
 }

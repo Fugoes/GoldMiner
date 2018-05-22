@@ -18,12 +18,14 @@ public class State {
     public void init() {
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
-        this.entities.add(new Rock(600, 500));
-        this.entities.add(new GoldMax(1000, 500));
-        this.entities.add(new GoldMid(1000, 700));
-        this.entities.add(new GoldMin(1000, 900));
-        this.entities.add(new Pocket(1300, 900));
-        this.entities.add(new Pig(1500, 890));
+        this.entities.add(new Pig(1500, 300));
+        this.entities.add(new Pig(1500, 400));
+        this.entities.add(new Pig(1500, 500));
+        this.entities.add(new Pig(1500, 600));
+        this.entities.add(new Pig(1500, 700));
+        this.entities.add(new Pig(1500, 800));
+        this.entities.add(new Pig(1500, 900));
+        this.entities.add(new Pig(1500, 1000));
     }
 
     public void move(int playerID, long time) {
@@ -101,7 +103,6 @@ public class State {
     private void moveNonEmpty(Hook hook, Tuple2<Long, Integer> t) {
         long delta = t.t1 - 200 - hook.pendingBeginTime;
         hook.pendingIntersectTime = hook.pendingBeginTime + 200 + delta;
-        System.out.println(this.entities.get(t.t2).speedFactor);
         hook.pendingEndTime = hook.pendingIntersectTime + 200 + delta * this.entities.get(t.t2).speedFactor;
         hook.pendingEntityId = t.t2;
         this.entities.get(hook.pendingEntityId).takenTime = hook.pendingIntersectTime;
@@ -118,7 +119,7 @@ public class State {
         for (int i = 0; i < this.entities.size(); i++) {
             Entity entity = this.entities.get(i);
             if (!(entity.takenTime < hook.pendingBeginTime)) {
-                int distance = entity.getDistance(hook, hook.pendingRad);
+                int distance = entity.getDistance(hook);
                 if (distance != -1) {
                     rs.add(new Tuple2<>(hook.pendingBeginTime + 200 + (int) (distance / Hook.DOWN_SPEED), i));
                 }

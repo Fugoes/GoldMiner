@@ -31,7 +31,8 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
         return result;
     }
 
-    int getDistance(Hook hook, double rad) {
+    int getDistance(Hook hook) {
+        double rad = hook.getRadByTime(hook.pendingBeginTime);
         int deltaX = this.x - hook.x;
         int deltaY = this.y - hook.y;
         double distance = Math.abs((deltaX + Math.tan(rad) * deltaY) * Math.cos(rad));
