@@ -12,18 +12,18 @@ public class State {
     private State() {
     }
 
-    Vector<Entity> entities = new Vector<>();
+    Vector<Entities.EntityBase> entities = new Vector<>();
     Hook[] hooks = new Hook[2];
 
     public void init() {
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
-        this.entities.add(new Rock(1920 / 2, 600));
-        this.entities.add(new GoldMax(1020 / 2, 600));
-        this.entities.add(new Pig(1500, 700));
-        this.entities.add(new Pig(1500, 800));
-        this.entities.add(new Pig(1500, 900));
-        this.entities.add(new Pig(1500, 1000));
+        this.entities.add(new Entities.Rock(1920 / 2, 600));
+        this.entities.add(new Entities.GoldMax(1020 / 2, 600));
+        this.entities.add(new Entities.Pig(1500, 700));
+        this.entities.add(new Entities.Pig(1500, 800));
+        this.entities.add(new Entities.Pig(1500, 900));
+        this.entities.add(new Entities.Pig(1500, 1000));
     }
 
     public void move(int playerID, long time) {
@@ -65,7 +65,7 @@ public class State {
     public static State getSnapshot() {
         State result = new State();
         synchronized (State.instance) {
-            for (Entity entity : State.instance.entities) {
+            for (Entities.EntityBase entity : State.instance.entities) {
                 result.entities.add(FP.liftExp(entity::clone).get().get());
             }
             result.hooks[0] = FP.liftExp(() -> State.instance.hooks[0].clone()).get().get();
@@ -84,8 +84,8 @@ public class State {
         }
     }
 
-    public void traverseEntities(Consumer<Entity> func) {
-        for (Entity entity : this.entities) {
+    public void traverseEntities(Consumer<Entities.EntityBase> func) {
+        for (Entities.EntityBase entity : this.entities) {
             func.accept(entity);
         }
     }
@@ -115,7 +115,7 @@ public class State {
     private Vector<Tuple2<Long, Integer>> getPossibleEntities(Hook hook) {
         Vector<Tuple2<Long, Integer>> rs = new Vector<>();
         for (int i = 0; i < this.entities.size(); i++) {
-            Entity entity = this.entities.get(i);
+            Entities.EntityBase entity = this.entities.get(i);
             if (!(entity.takenTime < hook.pendingBeginTime)) {
                 int distance = entity.getDistance(hook);
                 if (distance != -1) {
