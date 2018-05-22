@@ -138,7 +138,7 @@ public class Hook implements Cloneable, GUI.Paintable {
         double rad1 = Math.atan((double) (1920 - this.x) / (double) (1080 - this.y));
         int r;
         if (rad < rad0 && rad > -rad1) {
-            r = (int) (this.x / Math.cos(rad));
+            r = Integer.min((int) (this.x / Math.cos(rad)), (int) ((1920 - this.x) / Math.cos(rad)));
         } else if (rad >= rad0) {
             r = (int) (this.x / Math.sin(rad));
         } else {

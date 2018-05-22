@@ -18,10 +18,7 @@ public class State {
     public void init() {
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
-        this.entities.add(new Pig(1500, 300));
-        this.entities.add(new Pig(1500, 400));
-        this.entities.add(new Pig(1500, 500));
-        this.entities.add(new Pig(1500, 600));
+        this.entities.add(new Rock(1920 / 2, 600));
         this.entities.add(new Pig(1500, 700));
         this.entities.add(new Pig(1500, 800));
         this.entities.add(new Pig(1500, 900));

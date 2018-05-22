@@ -51,9 +51,11 @@ public class GUI {
         this.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    long time = Calendar.getInstance().getTimeInMillis();
+                long time = Calendar.getInstance().getTimeInMillis();
+                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     State.getInstance().move(0, time);
+                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    State.getInstance().move(1, time);
                 }
             }
         });
