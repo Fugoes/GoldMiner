@@ -96,6 +96,36 @@ public class GUI {
         });
     }
 
+    void beginWaitingConnectionScreen() {
+        this.frame.setPaintFunction(g -> {
+            int width, height;
+            Rectangle2D geom;
+            synchronized (GUI.this.rDim) {
+                width = GUI.this.rDim.width;
+                height = GUI.this.rDim.height;
+                Graphics bufferedG = GUI.this.image.getGraphics();
+                bufferedG.setColor(Color.WHITE);
+                bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
+                bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 100));
+                bufferedG.setColor(Color.BLACK);
+                geom = bufferedG.getFontMetrics().getStringBounds("Waiting  for  Connection...", bufferedG);
+                bufferedG.drawString(
+                        "Waiting  for  Connection...",
+                        GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                        GUI.this.vDim.height / 2
+                );
+                bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 40));
+                geom = bufferedG.getFontMetrics().getStringBounds("Created  by  Fugoes  with  Love", bufferedG);
+                bufferedG.drawString(
+                        "Created  by  Fugoes  with  Love",
+                        GUI.this.vDim.width - (int) geom.getWidth() - 10,
+                        GUI.this.vDim.height - 10
+                );
+                g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+            }
+        });
+    }
+
     void beginGameScreen() {
         this.frame.setPaintFunction(g -> {
             int width, height;
