@@ -21,9 +21,31 @@ public class State {
     Hook[] hooks = new Hook[2];
 
     public void init() {
-        Random random = new Random();
+        Random random = new Random(Calendar.getInstance().getTimeInMillis());
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
+        while (true) {
+            switch (this.entities.size()) {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                default:
+                    return;
+            }
+        }
+        /*
         this.entities.add(new Entities.Pig(1500, 700));
         this.entities.add(new Entities.Pig(1500, 800));
         this.entities.add(new Entities.Pig(1500, 900));
@@ -38,6 +60,7 @@ public class State {
         this.entities.add(new Entities.GoldMin(1020 / 2, 700));
         this.entities.add(new Entities.Pocket(123, 123, 123));
         this.entities.add(new Entities.Pocket(123, 123, 123));
+        */
     }
 
     public void move(int playerID, long time) {
