@@ -43,5 +43,5 @@ public abstract class Entity implements Cloneable, GUI.Paintable {
         }
     }
 
-    abstract BufferedImage getIMAGE();
+    abstract BufferedImage getImage(long time);
 }

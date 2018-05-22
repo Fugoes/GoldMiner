@@ -32,7 +32,7 @@ public class GoldMax extends Entity {
     }
 
     @Override
-    public BufferedImage getIMAGE() {
+    public BufferedImage getImage(long time) {
         return GoldMax.IMAGE;
     }
 }

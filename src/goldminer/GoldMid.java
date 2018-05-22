@@ -32,7 +32,7 @@ public class GoldMid extends Entity {
     }
 
     @Override
-    public BufferedImage getIMAGE() {
+    public BufferedImage getImage(long time) {
         return GoldMid.IMAGE;
     }
 }

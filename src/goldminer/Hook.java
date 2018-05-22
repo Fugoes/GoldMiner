@@ -70,7 +70,7 @@ public class Hook implements Cloneable, GUI.Paintable {
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
                 if (this.pendingEntityId >= 0) {
-                    g.drawImage(state.entities.get(this.pendingEntityId).getIMAGE(),
+                    g.drawImage(state.entities.get(this.pendingEntityId).getImage(time),
                             this.x - c.x + deltaX, this.y - c.y + deltaY, null);
                 }
                 g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);
@@ -85,7 +85,7 @@ public class Hook implements Cloneable, GUI.Paintable {
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
                 if (this.pendingEntityId >= 0) {
-                    g.drawImage(state.entities.get(this.pendingEntityId).getIMAGE(),
+                    g.drawImage(state.entities.get(this.pendingEntityId).getImage(time),
                             this.x - c.x + deltaX, this.y - c.y + deltaY, null);
                 }
                 g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);

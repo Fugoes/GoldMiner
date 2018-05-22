@@ -58,6 +58,13 @@ public class ImageTools {
         return dst;
     }
 
+    public static BufferedImage flipByY(BufferedImage src) {
+        BufferedImage dst = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics g = dst.getGraphics();
+        g.drawImage(src, src.getWidth(), 0, -src.getWidth(), src.getHeight(), null);
+        return dst;
+    }
+
     public static BufferedImage getImageFromRes(String name) {
         return FP.liftExp(() -> ImageIO.read(ImageTools.class.getResource(name))).get().get();
     }

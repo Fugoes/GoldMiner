@@ -30,7 +30,7 @@ public class Rock extends Entity {
     }
 
     @Override
-    public BufferedImage getIMAGE() {
+    public BufferedImage getImage(long time) {
         return Rock.IMAGE;
     }
 }
