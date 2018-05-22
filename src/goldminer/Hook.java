@@ -73,8 +73,8 @@ public class Hook implements Cloneable, GUI.Paintable {
                     BufferedImage entityImage = state.entities.get(this.pendingEntityId).getImage(time);
                     g.drawImage(
                             entityImage,
-                            this.x - c.x + deltaX,
-                            this.y - c.y + deltaY + entityImage.getHeight() / 2,
+                            this.x + deltaX - entityImage.getWidth() / 2,
+                            this.y + deltaY,
                             null
                     );
                 }
@@ -93,8 +93,8 @@ public class Hook implements Cloneable, GUI.Paintable {
                     BufferedImage entityImage = state.entities.get(this.pendingEntityId).getImage(time);
                     g.drawImage(
                             entityImage,
-                            this.x - c.x + deltaX,
-                            this.y - c.y + deltaY + entityImage.getHeight() / 2,
+                            this.x + deltaX - entityImage.getWidth() / 2,
+                            this.y + deltaY,
                             null
                     );
                 }

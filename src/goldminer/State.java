@@ -19,6 +19,7 @@ public class State {
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
         this.entities.add(new Rock(1920 / 2, 600));
+        this.entities.add(new GoldMax(1020 / 2, 600));
         this.entities.add(new Pig(1500, 700));
         this.entities.add(new Pig(1500, 800));
         this.entities.add(new Pig(1500, 900));
