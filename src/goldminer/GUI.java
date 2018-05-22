@@ -118,10 +118,7 @@ public class GUI {
         this.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                long time;
-                synchronized (State.getInstance()) {
-                    time = State.getInstance().getTime();
-                }
+                long time = State.getTimeSync();
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     State.getInstance().move(0, time);
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
