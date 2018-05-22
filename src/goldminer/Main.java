@@ -50,6 +50,7 @@ class TCPServerBiConsumer implements BiConsumer<Connections.ConnectionBase, Stri
 
     @Override
     public void accept(Connections.ConnectionBase connectionBase, String s) {
+        System.err.println(s);
         String[] args = s.split(",");
         switch (args[0]) {
             case "START":
@@ -72,6 +73,7 @@ class TCPClientBiConsumer implements BiConsumer<Connections.ConnectionBase, Stri
 
     @Override
     public void accept(Connections.ConnectionBase connectionBase, String s) {
+        System.err.println(s);
         String[] args = s.split(",");
         switch (args[0]) {
             case "START":

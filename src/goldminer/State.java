@@ -4,6 +4,7 @@ import util.FP;
 import util.Tuple2;
 
 import java.util.Calendar;
+import java.util.Random;
 import java.util.Vector;
 import java.util.function.Consumer;
 
@@ -19,14 +20,18 @@ public class State {
     Hook[] hooks = new Hook[2];
 
     public void init() {
+        Random random = new Random();
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
         this.entities.add(new Entities.Rock(1920 / 2, 600));
         this.entities.add(new Entities.GoldMax(1020 / 2, 600));
+        this.entities.add(new Entities.GoldMid(800, 600));
+        this.entities.add(new Entities.GoldMid(800, 900));
+        this.entities.add(new Entities.GoldMin(1000, 600));
+        this.entities.add(new Entities.GoldMin(1020 / 2, 700));
         this.entities.add(new Entities.Pig(1500, 700));
         this.entities.add(new Entities.Pig(1500, 800));
         this.entities.add(new Entities.Pig(1500, 900));
-        this.entities.add(new Entities.Pig(1500, 1000));
     }
 
     public void move(int playerID, long time) {
@@ -153,5 +158,12 @@ public class State {
             }
         });
         return rs;
+    }
+
+    private boolean checkEntityConflict(Entities.EntityBase newEntity) {
+        for (Entities.EntityBase entity : this.entities) {
+
+        }
+        return false;
     }
 }
