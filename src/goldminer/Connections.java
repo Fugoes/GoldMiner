@@ -9,12 +9,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Calendar;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 public class Connections {
     public interface ConnectionBase {
-
         void send(String string);
 
         boolean isUp();
@@ -40,7 +37,7 @@ public class Connections {
         }
 
         @Override
-        public void send(String string) {
+        public synchronized void send(String string) {
             this.out.write(string + "\n");
             this.out.flush();
         }
@@ -116,7 +113,7 @@ public class Connections {
         }
 
         @Override
-        public void send(String string) {
+        public synchronized void send(String string) {
             this.out.write(string + "\n");
             this.out.flush();
         }
