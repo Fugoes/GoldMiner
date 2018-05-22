@@ -1,5 +1,6 @@
 package goldminer;
 
+import util.Coordinate;
 import util.FP;
 import util.Tuple2;
 
@@ -165,17 +166,30 @@ public class State {
         return rs;
     }
 
-    private boolean checkEntityConflict(Entities.EntityBase newEntity) {
+    private boolean isEntitiesConflict(Entities.EntityBase newEntity) {
         for (Entities.EntityBase entity : this.entities) {
+            if (!this.isTwoEntitiesConflict(entity, newEntity)) {
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
-    private boolean ifTwoEntitiesConflict(Entities.EntityBase a, Entities.EntityBase b) {
+    private boolean isTwoEntitiesConflict(Entities.EntityBase a, Entities.EntityBase b) {
         if (a instanceof Entities.Pig || b instanceof Entities.Pig) {
-            return Math.abs(a.y - b.y) < Entities.Pig.RADIUS * 2;
+            return Math.abs(a.y - b.y) < a.getRadius() + b.getRadius() + 10;
         } else {
-            return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)) < 100;
+            return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))
+                    < a.getRadius() + b.getRadius() + 10;
         }
+    }
+
+    private Coordinate randomCoordinate(int radius) {
+        Random random = new Random(Calendar.getInstance().getTimeInMillis());
+        radius += 10;
+        return new Coordinate(
+                random.nextInt(1920 - 2 * radius) + radius,
+                random.nextInt(1080 - 2 * radius - 300) + 300
+        );
     }
 }
