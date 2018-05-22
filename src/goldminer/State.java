@@ -23,15 +23,20 @@ public class State {
         Random random = new Random();
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
+        this.entities.add(new Entities.Pig(1500, 700));
+        this.entities.add(new Entities.Pig(1500, 800));
+        this.entities.add(new Entities.Pig(1500, 900));
+        this.entities.add(new Entities.Rock(1920 / 2, 600));
+        this.entities.add(new Entities.Rock(1920 / 2, 600));
+        this.entities.add(new Entities.Rock(1920 / 2, 600));
         this.entities.add(new Entities.Rock(1920 / 2, 600));
         this.entities.add(new Entities.GoldMax(1020 / 2, 600));
         this.entities.add(new Entities.GoldMid(800, 600));
         this.entities.add(new Entities.GoldMid(800, 900));
         this.entities.add(new Entities.GoldMin(1000, 600));
         this.entities.add(new Entities.GoldMin(1020 / 2, 700));
-        this.entities.add(new Entities.Pig(1500, 700));
-        this.entities.add(new Entities.Pig(1500, 800));
-        this.entities.add(new Entities.Pig(1500, 900));
+        this.entities.add(new Entities.Pocket(123, 123, 123));
+        this.entities.add(new Entities.Pocket(123, 123, 123));
     }
 
     public void move(int playerID, long time) {
@@ -162,8 +167,15 @@ public class State {
 
     private boolean checkEntityConflict(Entities.EntityBase newEntity) {
         for (Entities.EntityBase entity : this.entities) {
-
         }
         return false;
+    }
+
+    private boolean ifTwoEntitiesConflict(Entities.EntityBase a, Entities.EntityBase b) {
+        if (a instanceof Entities.Pig || b instanceof Entities.Pig) {
+            return Math.abs(a.y - b.y) < Entities.Pig.RADIUS * 2;
+        } else {
+            return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)) < 100;
+        }
     }
 }
