@@ -21,6 +21,8 @@ public class GUI {
     final Dimension rDim = new Dimension(1920, 1080);
     final BufferedImage image = new BufferedImage(vDim.width, vDim.height, BufferedImage.TYPE_INT_ARGB);
     final java.util.Timer timer = new java.util.Timer();
+    int playerID;
+    Connections.ConnectionBase connection;
 
     Frame frame;
 
@@ -37,7 +39,7 @@ public class GUI {
         }, 0, 1000 / FPS);
     }
 
-    GUI() {
+    GUI(int playerID) {
         this.frame = new Frame();
         this.frame.addComponentListener(new ComponentAdapter() {
             @Override
@@ -55,6 +57,7 @@ public class GUI {
         this.frame.setSize(1000, 1000);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setVisible(true);
+        this.playerID = playerID;
     }
 
     void beginWelcomeScreen() {
@@ -149,10 +152,10 @@ public class GUI {
             @Override
             public void keyPressed(KeyEvent e) {
                 long time = State.getTimeSync();
-                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    State.getInstance().move(0, time);
-                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    State.getInstance().move(1, time);
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    State.getInstance().move(GUI.this.playerID, time);
+                    GUI.this.connection.send("MOVE," + GUI.this.playerID + "," + time);
+                    System.err.println("MOVE");
                 }
             }
         });

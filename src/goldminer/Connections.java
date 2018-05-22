@@ -59,8 +59,10 @@ public class Connections {
                 System.exit(-1);
             }
             new Thread(() -> {
-                String line = FP.liftExp(() -> this.in.readLine()).get().get();
-                this.callback.accept(this, line);
+                while (true) {
+                    String line = FP.liftExp(() -> this.in.readLine()).get().get();
+                    this.callback.accept(this, line);
+                }
             }).start();
             this.isUp = true;
             return true;
@@ -106,8 +108,10 @@ public class Connections {
             }
             this.isUp = true;
             new Thread(() -> {
-                String line = FP.liftExp(() -> this.in.readLine()).get().get();
-                this.callback.accept(this, line);
+                while (true) {
+                    String line = FP.liftExp(() -> this.in.readLine()).get().get();
+                    this.callback.accept(this, line);
+                }
             }).start();
             return true;
         }
