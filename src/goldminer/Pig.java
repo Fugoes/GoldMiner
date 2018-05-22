@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Pig extends Entity {
-    static final int RADIUS = 40;
+    static final int RADIUS = 50;
     static final int SPEED_FACTOR = 1;
     static final BufferedImage IMAGE_LEFT = ImageTools.shrinkTo(ImageTools.getImageFromRes(
             "/pig.png"), 75, 50);
