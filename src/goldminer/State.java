@@ -3,6 +3,7 @@ package goldminer;
 import util.FP;
 import util.Tuple2;
 
+import java.util.Calendar;
 import java.util.Vector;
 import java.util.function.Consumer;
 
@@ -11,6 +12,8 @@ public class State {
 
     private State() {
     }
+
+    private long zeroTime;
 
     Vector<Entities.EntityBase> entities = new Vector<>();
     Hook[] hooks = new Hook[2];
@@ -88,6 +91,14 @@ public class State {
         for (Entities.EntityBase entity : this.entities) {
             func.accept(entity);
         }
+    }
+
+    public void start() {
+        this.zeroTime = Calendar.getInstance().getTimeInMillis();
+    }
+
+    public long getTime() {
+        return Calendar.getInstance().getTimeInMillis() - this.zeroTime;
     }
 
     private void moveEmpty(Hook hook) {

@@ -1,8 +1,17 @@
 package goldminer;
 
+import util.FP;
+
 public class Main {
     public static void main(String[] argv) {
         State.getInstance().init();
-        new GUI(30);
+        GUI gui = new GUI();
+        gui.startTimerTask(30);
+        gui.beginWelcomeScreen();
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+        }
+        gui.beginGameScreen();
     }
 }
