@@ -25,11 +25,24 @@ public class FP {
         };
     }
 
+    public static Runnable liftExp(RunnableExp func) {
+        return () -> {
+            try {
+                func.run();
+            } catch (Exception e) {
+            }
+        };
+    }
+
     public interface SupplierExp<R> {
         R get() throws Exception;
     }
 
     public interface FunctionExp<T, R> {
         R apply(T arg) throws Exception;
+    }
+
+    public interface RunnableExp {
+        void run() throws Exception;
     }
 }

@@ -1,9 +1,13 @@
 package goldminer;
 
+import util.FP;
+
 import java.io.*;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Calendar;
 
 public class Connections {
     public interface ConnectionBase {
@@ -87,12 +91,17 @@ public class Connections {
 
         @Override
         public boolean waitForUp(int timeout) {
+            long beginTime = Calendar.getInstance().getTimeInMillis();
             try {
                 this.clientSocket = new Socket();
                 this.clientSocket.connect(new InetSocketAddress(this.hostname, this.port), timeout);
                 this.out = new PrintWriter(this.clientSocket.getOutputStream(), true);
                 this.in = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
             } catch (InterruptedIOException e) {
+                return false;
+            } catch (ConnectException e) {
+                FP.liftExp(() -> Thread.sleep(timeout - (Calendar.getInstance().getTimeInMillis() - beginTime)))
+                        .run();
                 return false;
             } catch (IOException e) {
                 System.exit(-1);

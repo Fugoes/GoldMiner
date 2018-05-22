@@ -1,5 +1,7 @@
 package goldminer;
 
+import util.FP;
+
 import java.util.Calendar;
 
 public class Main {
@@ -21,10 +23,7 @@ public class Main {
         long time = Calendar.getInstance().getTimeInMillis();
         gui.beginWelcomeScreen();
         if (connection.waitForUp(4000)) {
-            try {
-                Thread.sleep(4000 - (Calendar.getInstance().getTimeInMillis() - time));
-            } catch (Exception e) {
-            }
+            FP.liftExp(() -> Thread.sleep(4000 - (Calendar.getInstance().getTimeInMillis() - time))).run();
             State.getInstance().start();
             gui.beginGameScreen();
         } else {
