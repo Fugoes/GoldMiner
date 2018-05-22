@@ -70,8 +70,13 @@ public class Hook implements Cloneable, GUI.Paintable {
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
                 if (this.pendingEntityId >= 0) {
-                    g.drawImage(state.entities.get(this.pendingEntityId).getImage(time),
-                            this.x - c.x + deltaX, this.y - c.y + deltaY, null);
+                    BufferedImage entityImage = state.entities.get(this.pendingEntityId).getImage(time);
+                    g.drawImage(
+                            entityImage,
+                            this.x - c.x + deltaX,
+                            this.y - c.y + deltaY + entityImage.getHeight() / 2,
+                            null
+                    );
                 }
                 g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);
                 Graphics2D g2 = (Graphics2D) g;
@@ -85,8 +90,13 @@ public class Hook implements Cloneable, GUI.Paintable {
                 int deltaX = (int) (len * Math.sin(-rad));
                 int deltaY = (int) (len * Math.cos(-rad));
                 if (this.pendingEntityId >= 0) {
-                    g.drawImage(state.entities.get(this.pendingEntityId).getImage(time),
-                            this.x - c.x + deltaX, this.y - c.y + deltaY, null);
+                    BufferedImage entityImage = state.entities.get(this.pendingEntityId).getImage(time);
+                    g.drawImage(
+                            entityImage,
+                            this.x - c.x + deltaX,
+                            this.y - c.y + deltaY + entityImage.getHeight() / 2,
+                            null
+                    );
                 }
                 g.drawImage(image, this.x - c.x + deltaX, this.y - c.y + deltaY, null);
                 Graphics2D g2 = (Graphics2D) g;
