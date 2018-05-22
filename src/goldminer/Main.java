@@ -1,7 +1,5 @@
 package goldminer;
 
-import util.FP;
-
 public class Main {
     public static void main(String[] argv) {
         State.getInstance().init();
@@ -12,6 +10,7 @@ public class Main {
             Thread.sleep(5000);
         } catch (Exception e) {
         }
+        State.getInstance().start();
         gui.beginGameScreen();
     }
 }

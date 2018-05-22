@@ -73,6 +73,7 @@ public class State {
             }
             result.hooks[0] = FP.liftExp(() -> State.instance.hooks[0].clone()).get().get();
             result.hooks[1] = FP.liftExp(() -> State.instance.hooks[1].clone()).get().get();
+            result.zeroTime = State.instance.zeroTime;
         }
         return result;
     }
@@ -99,6 +100,14 @@ public class State {
 
     public long getTime() {
         return Calendar.getInstance().getTimeInMillis() - this.zeroTime;
+    }
+
+    public static long getTimeSync() {
+        long time;
+        synchronized (State.instance) {
+            time = State.instance.getTime();
+        }
+        return time;
     }
 
     private void moveEmpty(Hook hook) {

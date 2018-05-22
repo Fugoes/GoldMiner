@@ -106,7 +106,7 @@ public class GUI {
             Graphics bufferedG = GUI.this.image.getGraphics();
             bufferedG.setColor(Color.WHITE);
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
-            long time = Calendar.getInstance().getTimeInMillis();
+            long time = State.getTimeSync();
             State state = State.getSnapshot();
             state.traverseEntities(entity -> entity.paint(bufferedG, state, time));
             state.traverseHook(hook -> hook.paint(bufferedG, state, time));
@@ -118,7 +118,10 @@ public class GUI {
         this.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                long time = Calendar.getInstance().getTimeInMillis();
+                long time;
+                synchronized (State.getInstance()) {
+                    time = State.getInstance().getTime();
+                }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     State.getInstance().move(0, time);
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
