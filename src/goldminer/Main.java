@@ -2,7 +2,6 @@ package goldminer;
 
 import util.FP;
 
-import java.util.Calendar;
 import java.util.function.BiConsumer;
 
 public class Main {
@@ -27,7 +26,7 @@ public class Main {
                 return;
         }
         gui.connection = connection;
-        gui.startTimerTask(10);
+        gui.startTimerTask(60);
 
         gui.beginWelcomeScreen();
         FP.liftExp(() -> Thread.sleep(1000)).run();

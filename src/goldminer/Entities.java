@@ -58,6 +58,8 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
             return this.y;
         }
 
+        abstract int getRadius();
+
         abstract BufferedImage getImage(long time);
     }
 
@@ -92,6 +94,11 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         public BufferedImage getImage(long time) {
             return GoldMax.IMAGE;
         }
+
+        @Override
+        int getRadius() {
+            return GoldMax.RADIUS;
+        }
     }
 
     public static class GoldMid extends Entities.EntityBase {
@@ -125,6 +132,11 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         public BufferedImage getImage(long time) {
             return GoldMid.IMAGE;
         }
+
+        @Override
+        int getRadius() {
+            return GoldMid.RADIUS;
+        }
     }
 
     public static class GoldMin extends Entities.EntityBase {
@@ -157,6 +169,11 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         @Override
         public BufferedImage getImage(long time) {
             return GoldMin.IMAGE;
+        }
+
+        @Override
+        int getRadius() {
+            return GoldMin.RADIUS;
         }
     }
 
@@ -240,6 +257,11 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
                 }
             }
         }
+
+        @Override
+        int getRadius() {
+            return Pig.RADIUS;
+        }
     }
 
     public static class Pocket extends Entities.EntityBase {
@@ -272,6 +294,11 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         public BufferedImage getImage(long time) {
             return Pocket.IMAGE;
         }
+
+        @Override
+        int getRadius() {
+            return Pocket.RADIUS;
+        }
     }
 
     public static class Rock extends Entities.EntityBase {
@@ -302,6 +329,11 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         @Override
         public BufferedImage getImage(long time) {
             return Rock.IMAGE;
+        }
+
+        @Override
+        int getRadius() {
+            return Rock.RADIUS;
         }
     }
 }
