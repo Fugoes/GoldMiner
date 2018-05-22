@@ -51,14 +51,16 @@ public class Pig extends Entity {
         }
     }
 
-    private int getX(long time) {
+    @Override
+    int getX(long time) {
         time += this.x * Pig.PERIOD / 1800 / 2;
         time %= Pig.PERIOD;
         time = time > Pig.PERIOD / 2 ? Pig.PERIOD - time : time;
         return (int) (time * 1800 * 2 / Pig.PERIOD + 60);
     }
 
-    private int getY(long time) {
+    @Override
+    int getY(long time) {
         return this.y;
     }
 }
