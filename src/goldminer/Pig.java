@@ -6,10 +6,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Pig extends Entity {
-    static final int RADIUS = 45;
+    static final int RADIUS = 36;
     static final int SPEED_FACTOR = 1;
     static final BufferedImage IMAGE = ImageTools.shrinkTo(ImageTools.getImageFromRes(
-            "/pig.png"), 90, 60);
+            "/pig.png"), 75, 50);
 
     Pig(int x, int y) {
         super(x, y, Pig.SPEED_FACTOR, Pig.RADIUS);
