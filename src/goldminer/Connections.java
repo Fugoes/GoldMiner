@@ -8,12 +8,14 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Calendar;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class Connections {
     public interface ConnectionBase {
-        void send(String string);
 
-        String recv();
+        void send(String string);
 
         boolean isUp();
 
@@ -26,28 +28,21 @@ public class Connections {
         PrintWriter out;
         BufferedReader in;
         boolean isUp = false;
+        BiConsumer<ConnectionBase, String> callback;
 
-        TCPServer(int portNumber) {
+        TCPServer(int portNumber, BiConsumer<ConnectionBase, String> callback) {
             try {
                 this.serverSocket = new ServerSocket(portNumber);
             } catch (IOException e) {
                 System.exit(-1);
             }
+            this.callback = callback;
         }
 
         @Override
         public void send(String string) {
             this.out.write(string + "\n");
-        }
-
-        @Override
-        public String recv() {
-            try {
-                return this.in.readLine();
-            } catch (IOException e) {
-                System.exit(-1);
-                return null;
-            }
+            this.out.flush();
         }
 
         @Override
@@ -66,6 +61,10 @@ public class Connections {
             } catch (IOException e) {
                 System.exit(-1);
             }
+            new Thread(() -> {
+                String line = FP.liftExp(() -> this.in.readLine()).get().get();
+                this.callback.accept(this, line);
+            }).start();
             this.isUp = true;
             return true;
         }
@@ -83,10 +82,12 @@ public class Connections {
         PrintWriter out;
         BufferedReader in;
         boolean isUp = false;
+        BiConsumer<ConnectionBase, String> callback;
 
-        TCPClient(String hostname, int port) {
+        TCPClient(String hostname, int port, BiConsumer<ConnectionBase, String> callback) {
             this.hostname = hostname;
             this.port = port;
+            this.callback = callback;
         }
 
         @Override
@@ -107,22 +108,17 @@ public class Connections {
                 System.exit(-1);
             }
             this.isUp = true;
+            new Thread(() -> {
+                String line = FP.liftExp(() -> this.in.readLine()).get().get();
+                this.callback.accept(this, line);
+            }).start();
             return true;
         }
 
         @Override
         public void send(String string) {
             this.out.write(string + "\n");
-        }
-
-        @Override
-        public String recv() {
-            try {
-                return this.in.readLine();
-            } catch (IOException e) {
-                System.exit(-1);
-                return null;
-            }
+            this.out.flush();
         }
 
         @Override
