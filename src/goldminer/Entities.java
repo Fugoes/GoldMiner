@@ -11,12 +11,13 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         int y;
         int radius;
         int speedFactor;
+        int score;
         long takenTime;
 
         EntityBase() {
         }
 
-        EntityBase(int x, int y, int speedFactor, int radius) {
+        EntityBase(int x, int y, int speedFactor, int radius, int score) {
             this.x = x;
             this.y = y;
             this.radius = radius;
@@ -31,6 +32,7 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
             result.y = this.y;
             result.radius = this.radius;
             result.speedFactor = this.speedFactor;
+            result.score = this.score;
             result.takenTime = this.takenTime;
             return result;
         }
@@ -62,11 +64,12 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
     public static class GoldMax extends Entities.EntityBase {
         static final int RADIUS = 75;
         static final int SPEED_FACTOR = 3;
+        static final int SCORE = 500;
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/gold.png"), 150, 150);
 
         GoldMax(int x, int y) {
-            super(x, y, GoldMax.SPEED_FACTOR, GoldMax.RADIUS);
+            super(x, y, GoldMax.SPEED_FACTOR, GoldMax.RADIUS, GoldMax.SCORE);
         }
 
         private GoldMax() {
@@ -94,11 +97,12 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
     public static class GoldMid extends Entities.EntityBase {
         static final int RADIUS = 50;
         static final int SPEED_FACTOR = 2;
+        static final int SCORE = 200;
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/gold.png"), 100, 100);
 
         GoldMid(int x, int y) {
-            super(x, y, GoldMid.SPEED_FACTOR, GoldMid.RADIUS);
+            super(x, y, GoldMid.SPEED_FACTOR, GoldMid.RADIUS, GoldMid.SCORE);
         }
 
         private GoldMid() {
@@ -126,11 +130,12 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
     public static class GoldMin extends Entities.EntityBase {
         static final int RADIUS = 25;
         static final int SPEED_FACTOR = 1;
+        static final int SCORE = 100;
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/gold.png"), 50, 50);
 
         GoldMin(int x, int y) {
-            super(x, y, GoldMin.SPEED_FACTOR, GoldMin.RADIUS);
+            super(x, y, GoldMin.SPEED_FACTOR, GoldMin.RADIUS, GoldMid.SCORE);
         }
 
         private GoldMin() {
@@ -158,6 +163,7 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
     public static class Pig extends Entities.EntityBase {
         static final int RADIUS = 50;
         static final int SPEED_FACTOR = 1;
+        static final int SCORE = 5;
         static final BufferedImage IMAGE_LEFT = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/pig.png"), 75, 50);
         static final BufferedImage IMAGE_RIGHT = ResTools.flipByY(ResTools.shrinkTo(ResTools.getImageFromRes(
@@ -165,7 +171,7 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         static final int PERIOD = 8000;
 
         Pig(int x, int y) {
-            super(x, y, Pig.SPEED_FACTOR, Pig.RADIUS);
+            super(x, y, Pig.SPEED_FACTOR, Pig.RADIUS, Pig.SCORE);
         }
 
         private Pig() {
@@ -242,8 +248,8 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/pocket.png"), 100, 100);
 
-        Pocket(int x, int y) {
-            super(x, y, Pocket.SPEED_FACTOR, Pocket.RADIUS);
+        Pocket(int x, int y, int score) {
+            super(x, y, Pocket.SPEED_FACTOR, Pocket.RADIUS, score);
         }
 
         private Pocket() {
@@ -271,10 +277,11 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
     public static class Rock extends Entities.EntityBase {
         static final int RADIUS = 60;
         static final int SPEED_FACTOR = 2;
+        static final int SCORE = 20;
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes("/rock.png"), 140, 100);
 
         Rock(int x, int y) {
-            super(x, y, Rock.SPEED_FACTOR, Rock.RADIUS);
+            super(x, y, Rock.SPEED_FACTOR, Rock.RADIUS, Rock.SCORE);
         }
 
         private Rock() {
