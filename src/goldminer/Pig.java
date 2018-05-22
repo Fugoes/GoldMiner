@@ -1,7 +1,6 @@
 package goldminer;
 
-import util.Coordinate;
-import util.ImageTools;
+import util.ResTools;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,9 +8,9 @@ import java.awt.image.BufferedImage;
 public class Pig extends Entity {
     static final int RADIUS = 50;
     static final int SPEED_FACTOR = 1;
-    static final BufferedImage IMAGE_LEFT = ImageTools.shrinkTo(ImageTools.getImageFromRes(
+    static final BufferedImage IMAGE_LEFT = ResTools.shrinkTo(ResTools.getImageFromRes(
             "/pig.png"), 75, 50);
-    static final BufferedImage IMAGE_RIGHT = ImageTools.flipByY(ImageTools.shrinkTo(ImageTools.getImageFromRes(
+    static final BufferedImage IMAGE_RIGHT = ResTools.flipByY(ResTools.shrinkTo(ResTools.getImageFromRes(
             "/pig.png"), 75, 50));
     static final int PERIOD = 8000;
 

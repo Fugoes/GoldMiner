@@ -1,6 +1,6 @@
 package goldminer;
 
-import util.ImageTools;
+import util.ResTools;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 public class GoldMid extends Entity {
     static final int RADIUS = 50;
     static final int SPEED_FACTOR = 2;
-    static final BufferedImage IMAGE = ImageTools.shrinkTo(ImageTools.getImageFromRes(
+    static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
             "/gold.png"), 100, 100);
 
     GoldMid(int x, int y) {

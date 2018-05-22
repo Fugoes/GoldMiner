@@ -1,6 +1,6 @@
 package goldminer;
 
-import util.ImageTools;
+import util.ResTools;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 public class Rock extends Entity {
     static final int RADIUS = 60;
     static final int SPEED_FACTOR = 2;
-    static final BufferedImage IMAGE = ImageTools.shrinkTo(ImageTools.getImageFromRes("/rock.png"), 140, 100);
+    static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes("/rock.png"), 140, 100);
 
     Rock(int x, int y) {
         super(x, y, Rock.SPEED_FACTOR, Rock.RADIUS);

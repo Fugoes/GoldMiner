@@ -1,7 +1,7 @@
 package goldminer;
 
 import util.Coordinate;
-import util.ImageTools;
+import util.ResTools;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage;
 public class Hook implements Cloneable, GUI.Paintable {
     static final int MAX_DEGREE = 88;
     static final BufferedImage IMAGE
-            = ImageTools.shrinkTo(ImageTools.getImageFromRes("/hook.png"), 70, 50);
+            = ResTools.shrinkTo(ResTools.getImageFromRes("/hook.png"), 70, 50);
     static final double DOWN_SPEED = 0.5;
 
     int x;
@@ -44,16 +44,16 @@ public class Hook implements Cloneable, GUI.Paintable {
     public void paint(Graphics g, State state, long time) {
         if (time < this.pendingBeginTime) {
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
-            BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.pendingRad, c);
+            BufferedImage image = ResTools.rotateByRad(Hook.IMAGE, this.pendingRad, c);
             g.drawImage(image, this.x - c.x, this.y - c.y, null);
         } else if (time >= this.pendingEndTime + 200) {
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
-            BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, this.getRadByTime(time), c);
+            BufferedImage image = ResTools.rotateByRad(Hook.IMAGE, this.getRadByTime(time), c);
             g.drawImage(image, this.x - c.x, this.y - c.y, null);
         } else {
             double rad = this.pendingRad;
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
-            BufferedImage image = ImageTools.rotateByRad(Hook.IMAGE, rad, c);
+            BufferedImage image = ResTools.rotateByRad(Hook.IMAGE, rad, c);
             if (time < this.pendingBeginTime + 200) {
                 g.drawImage(image, this.x - c.x, this.y - c.y, null);
             } else if (time < this.pendingIntersectTime) {

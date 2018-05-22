@@ -4,7 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class ImageTools {
+public class ResTools {
     /**
      * Shrink src to new image with width x height.
      *
@@ -66,6 +66,6 @@ public class ImageTools {
     }
 
     public static BufferedImage getImageFromRes(String name) {
-        return FP.liftExp(() -> ImageIO.read(ImageTools.class.getResource(name))).get().get();
+        return FP.liftExp(() -> ImageIO.read(ResTools.class.getResource(name))).get().get();
     }
 }
