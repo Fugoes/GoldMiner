@@ -68,4 +68,9 @@ public class ResTools {
     public static BufferedImage getImageFromRes(String name) {
         return FP.liftExp(() -> ImageIO.read(ResTools.class.getResource(name))).get().get();
     }
+
+    public static Font getFontFromRes(String name) {
+        return FP.liftExp(() -> Font.createFont(Font.TRUETYPE_FONT, ResTools.class.getResourceAsStream(name)))
+                .get().get();
+    }
 }

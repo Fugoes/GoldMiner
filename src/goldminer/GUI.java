@@ -1,5 +1,7 @@
 package goldminer;
 
+import util.ResTools;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -10,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.util.Calendar;
 
 public class GUI {
+    final static Font FONT = ResTools.getFontFromRes("/xkcd.otf");
+
     final Dimension vDim = new Dimension(1920, 1080);
     final Dimension rDim = new Dimension(1920, 1080);
     final BufferedImage image = new BufferedImage(vDim.width, vDim.height, BufferedImage.TYPE_INT_ARGB);
@@ -74,6 +78,9 @@ public class GUI {
             State state = State.getSnapshot();
             state.traverseEntities(entity -> entity.paint(bufferedG, state, time));
             state.traverseHook(hook -> hook.paint(bufferedG, state, time));
+            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 45));
+            bufferedG.setColor(Color.BLACK);
+            bufferedG.drawString("Hello", 20, 60);
             g.drawImage(GUI.this.image, 0, 0, width, height, this);
         }
     }
