@@ -37,6 +37,26 @@ public class GUI {
         }, 0, 1000 / FPS);
     }
 
+    GUI() {
+        this.frame = new Frame();
+        this.frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Dimension dim = GUI.this.frame.getSize();
+                if (!GUI.this.adjustToVDimRatio(dim)) {
+                    GUI.this.frame.setSize(dim);
+                }
+                synchronized (GUI.this.rDim) {
+                    GUI.this.rDim.width = dim.width;
+                    GUI.this.rDim.height = dim.height;
+                }
+            }
+        });
+        this.frame.setSize(1000, 1000);
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setVisible(true);
+    }
+
     void beginWelcomeScreen() {
         final long zeroTime = Calendar.getInstance().getTimeInMillis();
         this.frame.setPaintFunction(g -> {
@@ -106,26 +126,6 @@ public class GUI {
                 }
             }
         });
-    }
-
-    GUI() {
-        this.frame = new Frame();
-        this.frame.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                Dimension dim = GUI.this.frame.getSize();
-                if (!GUI.this.adjustToVDimRatio(dim)) {
-                    GUI.this.frame.setSize(dim);
-                }
-                synchronized (GUI.this.rDim) {
-                    GUI.this.rDim.width = dim.width;
-                    GUI.this.rDim.height = dim.height;
-                }
-            }
-        });
-        this.frame.setSize(1000, 1000);
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setVisible(true);
     }
 
     class Frame extends JFrame {
