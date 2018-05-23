@@ -21,9 +21,12 @@ public class State {
     Hook[] hooks = new Hook[2];
 
     public void init() {
-        Random random = new Random(Calendar.getInstance().getTimeInMillis());
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
+    }
+
+    public void randomInit() {
+        Random random = new Random(Calendar.getInstance().getTimeInMillis());
         int count = 0;
         Entities.EntityBase newEntity = null;
         while (true) {
@@ -103,6 +106,14 @@ public class State {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public void loadEntities(String[] strings) {
+        int i = 1;
+        while (true) {
+            switch (strings[i]) {
+            }
+        }
     }
 
     public void move(int playerID, long time) {

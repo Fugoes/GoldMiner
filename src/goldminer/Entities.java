@@ -62,6 +62,8 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
 
         abstract int getRadius();
 
+        abstract String getName();
+
         abstract BufferedImage getImage(long time);
     }
 
@@ -69,6 +71,7 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         static final int RADIUS = 75;
         static final int SPEED_FACTOR = 3;
         static final int SCORE = 500;
+        static final String NAME = "GoldMax";
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/gold.png"), 150, 150);
 
@@ -101,12 +104,18 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         int getRadius() {
             return GoldMax.RADIUS;
         }
+
+        @Override
+        String getName() {
+            return GoldMax.NAME;
+        }
     }
 
     public static class GoldMid extends Entities.EntityBase {
         static final int RADIUS = 50;
         static final int SPEED_FACTOR = 2;
         static final int SCORE = 200;
+        static final String NAME = "GoldMid";
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/gold.png"), 100, 100);
 
@@ -139,17 +148,23 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         int getRadius() {
             return GoldMid.RADIUS;
         }
+
+        @Override
+        String getName() {
+            return GoldMid.NAME;
+        }
     }
 
     public static class GoldMin extends Entities.EntityBase {
         static final int RADIUS = 25;
         static final int SPEED_FACTOR = 1;
         static final int SCORE = 100;
+        static final String NAME = "GoldMin";
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/gold.png"), 50, 50);
 
         GoldMin(int x, int y) {
-            super(x, y, GoldMin.SPEED_FACTOR, GoldMin.RADIUS, GoldMid.SCORE);
+            super(x, y, GoldMin.SPEED_FACTOR, GoldMin.RADIUS, GoldMin.SCORE);
         }
 
         private GoldMin() {
@@ -177,12 +192,18 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         int getRadius() {
             return GoldMin.RADIUS;
         }
+
+        @Override
+        String getName() {
+            return GoldMin.NAME;
+        }
     }
 
     public static class Pig extends Entities.EntityBase {
         static final int RADIUS = 50;
         static final int SPEED_FACTOR = 1;
         static final int SCORE = 5;
+        static final String NAME = "Pig";
         static final BufferedImage IMAGE_LEFT = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/pig.png"), 75, 50);
         static final BufferedImage IMAGE_RIGHT = ResTools.flipByY(ResTools.shrinkTo(ResTools.getImageFromRes(
@@ -264,11 +285,17 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         int getRadius() {
             return Pig.RADIUS;
         }
+
+        @Override
+        String getName() {
+            return Pig.NAME;
+        }
     }
 
     public static class Pocket extends Entities.EntityBase {
         static final int RADIUS = 50;
         static final int SPEED_FACTOR = 2;
+        static final String NAME = "Pocket";
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes(
                 "/pocket.png"), 100, 100);
 
@@ -301,12 +328,18 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         int getRadius() {
             return Pocket.RADIUS;
         }
+
+        @Override
+        String getName() {
+            return Pocket.NAME;
+        }
     }
 
     public static class Rock extends Entities.EntityBase {
         static final int RADIUS = 60;
         static final int SPEED_FACTOR = 2;
         static final int SCORE = 20;
+        static final String NAME = "Rock";
         static final BufferedImage IMAGE = ResTools.shrinkTo(ResTools.getImageFromRes("/rock.png"), 140, 100);
 
         Rock(int x, int y) {
@@ -336,6 +369,11 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         @Override
         int getRadius() {
             return Rock.RADIUS;
+        }
+
+        @Override
+        String getName() {
+            return Rock.NAME;
         }
     }
 }
