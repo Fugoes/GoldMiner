@@ -100,7 +100,7 @@ public class State {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("ENTITIES");
         for (Entities.EntityBase entity : this.entities) {
-            stringBuilder.append("," + entity.getClass().toString() + "," + entity.x + "," + entity.y);
+            stringBuilder.append("," + entity.getName() + "," + entity.x + "," + entity.y);
             if (entity instanceof Entities.Pocket) {
                 stringBuilder.append("," + entity.score);
             }
@@ -110,9 +110,54 @@ public class State {
 
     public void loadEntities(String[] strings) {
         int i = 1;
-        while (true) {
+        Entities.EntityBase entity = null;
+        while (i < strings.length) {
             switch (strings[i]) {
+                case Entities.GoldMax.NAME:
+                    entity = new Entities.GoldMax(
+                            Integer.valueOf(strings[i + 1]),
+                            Integer.valueOf(strings[i + 2])
+                    );
+                    i += 2;
+                    break;
+                case Entities.GoldMid.NAME:
+                    entity = new Entities.GoldMid(
+                            Integer.valueOf(strings[i + 1]),
+                            Integer.valueOf(strings[i + 2])
+                    );
+                    i += 2;
+                    break;
+                case Entities.GoldMin.NAME:
+                    entity = new Entities.GoldMin(
+                            Integer.valueOf(strings[i + 1]),
+                            Integer.valueOf(strings[i + 2])
+                    );
+                    i += 2;
+                    break;
+                case Entities.Pig.NAME:
+                    entity = new Entities.Pig(
+                            Integer.valueOf(strings[i + 1]),
+                            Integer.valueOf(strings[i + 2])
+                    );
+                    i += 2;
+                    break;
+                case Entities.Pocket.NAME:
+                    entity = new Entities.Pocket(
+                            Integer.valueOf(strings[i + 1]),
+                            Integer.valueOf(strings[i + 2]),
+                            Integer.valueOf(strings[i + 3])
+                    );
+                    i += 3;
+                    break;
+                case Entities.Rock.NAME:
+                    entity = new Entities.Rock(
+                            Integer.valueOf(strings[i + 1]),
+                            Integer.valueOf(strings[i + 2])
+                    );
+                    i += 2;
+                    break;
             }
+            this.entities.add(entity);
         }
     }
 
