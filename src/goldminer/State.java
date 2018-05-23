@@ -93,6 +93,18 @@ public class State {
         }
     }
 
+    public String dumpEntities() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("ENTITIES");
+        for (Entities.EntityBase entity : this.entities) {
+            stringBuilder.append("," + entity.getClass().toString() + "," + entity.x + "," + entity.y);
+            if (entity instanceof Entities.Pocket) {
+                stringBuilder.append("," + entity.score);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     public void move(int playerID, long time) {
         synchronized (this) {
             Hook hook = this.hooks[playerID];
