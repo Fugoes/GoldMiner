@@ -24,43 +24,73 @@ public class State {
         Random random = new Random(Calendar.getInstance().getTimeInMillis());
         this.hooks[0] = new Hook(860, 200);
         this.hooks[1] = new Hook(1060, 200);
+        int count = 0;
+        Entities.EntityBase newEntity = null;
         while (true) {
+            if (this.entities.size() == 14) {
+                for (Entities.EntityBase entity : this.entities) {
+                    System.out.println(entity.getClass().toString());
+                }
+                return;
+            }
             switch (this.entities.size()) {
                 case 0:
                 case 1:
                 case 2:
+                    newEntity = new Entities.Pig(
+                            this.randomX(Entities.Pig.RADIUS, random),
+                            this.randomY(Entities.Pig.RADIUS, random)
+                    );
+                    break;
                 case 3:
                 case 4:
                 case 5:
                 case 6:
+                    newEntity = new Entities.Rock(
+                            this.randomX(Entities.Rock.RADIUS, random),
+                            this.randomY(Entities.Rock.RADIUS, random)
+                    );
+                    break;
                 case 7:
+                    newEntity = new Entities.GoldMax(
+                            this.randomX(Entities.GoldMax.RADIUS, random),
+                            this.randomY(Entities.GoldMax.RADIUS, random)
+                    );
+                    break;
                 case 8:
                 case 9:
+                    newEntity = new Entities.GoldMid(
+                            this.randomX(Entities.GoldMid.RADIUS, random),
+                            this.randomY(Entities.GoldMid.RADIUS, random)
+                    );
+                    break;
                 case 10:
                 case 11:
+                    newEntity = new Entities.GoldMin(
+                            this.randomX(Entities.GoldMin.RADIUS, random),
+                            this.randomY(Entities.GoldMin.RADIUS, random)
+                    );
+                    break;
                 case 12:
                 case 13:
-                case 14:
-                default:
-                    return;
+                    newEntity = new Entities.Pocket(
+                            this.randomX(Entities.Pocket.RADIUS, random),
+                            this.randomY(Entities.Pocket.RADIUS, random),
+                            random.nextInt(1000)
+                    );
+                    break;
+            }
+            if (this.isEntitiesConflict(newEntity)) {
+                count++;
+                if (count == 500) {
+                    this.entities.remove(this.entities.size() - 1);
+                    count = 0;
+                }
+            } else {
+                this.entities.add(newEntity);
+                count = 0;
             }
         }
-        /*
-        this.entities.add(new Entities.Pig(1500, 700));
-        this.entities.add(new Entities.Pig(1500, 800));
-        this.entities.add(new Entities.Pig(1500, 900));
-        this.entities.add(new Entities.Rock(1920 / 2, 600));
-        this.entities.add(new Entities.Rock(1920 / 2, 600));
-        this.entities.add(new Entities.Rock(1920 / 2, 600));
-        this.entities.add(new Entities.Rock(1920 / 2, 600));
-        this.entities.add(new Entities.GoldMax(1020 / 2, 600));
-        this.entities.add(new Entities.GoldMid(800, 600));
-        this.entities.add(new Entities.GoldMid(800, 900));
-        this.entities.add(new Entities.GoldMin(1000, 600));
-        this.entities.add(new Entities.GoldMin(1020 / 2, 700));
-        this.entities.add(new Entities.Pocket(123, 123, 123));
-        this.entities.add(new Entities.Pocket(123, 123, 123));
-        */
     }
 
     public void move(int playerID, long time) {
@@ -191,28 +221,29 @@ public class State {
 
     private boolean isEntitiesConflict(Entities.EntityBase newEntity) {
         for (Entities.EntityBase entity : this.entities) {
-            if (!this.isTwoEntitiesConflict(entity, newEntity)) {
-                return false;
+            if (this.isTwoEntitiesConflict(entity, newEntity)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private boolean isTwoEntitiesConflict(Entities.EntityBase a, Entities.EntityBase b) {
         if (a instanceof Entities.Pig || b instanceof Entities.Pig) {
-            return Math.abs(a.y - b.y) < a.getRadius() + b.getRadius() + 10;
+            return Math.abs(a.y - b.y) < a.getRadius() + b.getRadius() + 5;
         } else {
             return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))
-                    < a.getRadius() + b.getRadius() + 10;
+                    < a.getRadius() + b.getRadius() + 5;
         }
     }
 
-    private Coordinate randomCoordinate(int radius) {
-        Random random = new Random(Calendar.getInstance().getTimeInMillis());
+    private int randomX(int radius, Random random) {
         radius += 10;
-        return new Coordinate(
-                random.nextInt(1920 - 2 * radius) + radius,
-                random.nextInt(1080 - 2 * radius - 300) + 300
-        );
+        return random.nextInt(1920 - 2 * radius) + radius;
+    }
+
+    private int randomY(int radius, Random random) {
+        radius += 10;
+        return random.nextInt(1080 - 2 * radius - 300) + 300;
     }
 }
