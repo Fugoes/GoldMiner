@@ -4,7 +4,6 @@ import util.ResTools;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 public abstract class Entities implements Cloneable, GUI.Paintable {
     public static abstract class EntityBase implements Cloneable, GUI.Paintable {

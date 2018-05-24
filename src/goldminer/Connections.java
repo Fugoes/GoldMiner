@@ -1,5 +1,11 @@
 package goldminer;
 
+import util.FP;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.function.BiConsumer;
@@ -10,7 +16,7 @@ import java.util.function.Supplier;
  * master: send state
  */
 public class Connections {
-    public abstract class ConnectionBase {
+    public static abstract class ConnectionBase {
         boolean isMaster;
         BiConsumer<Integer, Long> receiveMoveCallback;
         Runnable gameStartFunction;
@@ -30,21 +36,128 @@ public class Connections {
         }
 
         abstract void sendMove(int playerID, long time);
+
+        abstract String receiveOneLine();
+
+        void mainLoop() {
+            while (true) {
+                String msg = this.receiveOneLine();
+                System.err.println(msg);
+                String[] args = msg.split(",");
+                switch (args[0]) {
+                    case "MOVE":
+                        this.receiveMoveCallback.accept(Integer.valueOf(args[1]), Long.valueOf(args[2]));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 
-    public class TCPServer extends ConnectionBase {
+    public static class TCPServer extends ConnectionBase {
         ServerSocket serverSocket;
         Socket socket;
+        BufferedReader in;
+        PrintWriter out;
+        int port;
 
-        TCPServer(BiConsumer<Integer, Long> receiveMoveCallback,
+        TCPServer(int port,
+                  BiConsumer<Integer, Long> receiveMoveCallback,
                   Runnable gameStartFunction,
                   Supplier<String> stateSupplier,
                   Consumer<String> stateConsumer) {
             super(true, receiveMoveCallback, gameStartFunction, stateSupplier, stateConsumer);
+            this.port = port;
+            new Thread(() -> {
+                this.waitForUp();
+                String state = this.stateSupplier.get();
+                this.out.println(state);
+                String answer = FP.liftExp(() -> this.in.readLine()).get().get();
+                if (answer.equals("START")) {
+                    this.gameStartFunction.run();
+                    System.err.println("start");
+                    this.mainLoop();
+                } else {
+                    System.exit(-1);
+                }
+            }).start();
         }
 
         @Override
         void sendMove(int playerID, long time) {
+            this.out.println("MOVE," + playerID + "," + time);
+        }
+
+        @Override
+        String receiveOneLine() {
+            return FP.liftExp(() -> this.in.readLine()).get().get();
+        }
+
+        private void waitForUp() {
+            try {
+                this.serverSocket = new ServerSocket(this.port);
+                this.socket = this.serverSocket.accept();
+                this.out = new PrintWriter(this.socket.getOutputStream(), true);
+                this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            } catch (IOException e) {
+                System.exit(-1);
+            }
+        }
+    }
+
+    public static class TCPClient extends ConnectionBase {
+        Socket socket;
+        BufferedReader in;
+        PrintWriter out;
+        String addr;
+        int port;
+
+        TCPClient(
+                String addr,
+                int port,
+                BiConsumer<Integer, Long> receiveMoveCallback,
+                Runnable gameStartFunction,
+                Supplier<String> stateSupplier,
+                Consumer<String> stateConsumer) {
+            super(false, receiveMoveCallback, gameStartFunction, stateSupplier, stateConsumer);
+            this.addr = addr;
+            this.port = port;
+            new Thread(() -> {
+                this.waitForUp();
+                String state = this.receiveOneLine();
+                this.stateConsumer.accept(state);
+                this.out.println("START");
+                this.gameStartFunction.run();
+                this.mainLoop();
+            }).start();
+        }
+
+        @Override
+        void sendMove(int playerID, long time) {
+            this.out.println("MOVE," + playerID + "," + time);
+        }
+
+        @Override
+        String receiveOneLine() {
+            return FP.liftExp(() -> this.in.readLine()).get().get();
+        }
+
+        private void waitForUp() {
+            while (true) {
+                try {
+                    this.socket = new Socket(this.addr, this.port);
+                    break;
+                } catch (IOException e) {
+                    FP.liftExp(() -> Thread.sleep(100)).run();
+                }
+            }
+            try {
+                this.out = new PrintWriter(this.socket.getOutputStream(), true);
+                this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            } catch (IOException e) {
+                System.exit(-1);
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 package goldminer;
 
-import util.Coordinate;
 import util.FP;
 import util.Tuple2;
 
@@ -118,28 +117,28 @@ public class State {
                             Integer.valueOf(strings[i + 1]),
                             Integer.valueOf(strings[i + 2])
                     );
-                    i += 2;
+                    i += 3;
                     break;
                 case Entities.GoldMid.NAME:
                     entity = new Entities.GoldMid(
                             Integer.valueOf(strings[i + 1]),
                             Integer.valueOf(strings[i + 2])
                     );
-                    i += 2;
+                    i += 3;
                     break;
                 case Entities.GoldMin.NAME:
                     entity = new Entities.GoldMin(
                             Integer.valueOf(strings[i + 1]),
                             Integer.valueOf(strings[i + 2])
                     );
-                    i += 2;
+                    i += 3;
                     break;
                 case Entities.Pig.NAME:
                     entity = new Entities.Pig(
                             Integer.valueOf(strings[i + 1]),
                             Integer.valueOf(strings[i + 2])
                     );
-                    i += 2;
+                    i += 3;
                     break;
                 case Entities.Pocket.NAME:
                     entity = new Entities.Pocket(
@@ -147,14 +146,14 @@ public class State {
                             Integer.valueOf(strings[i + 2]),
                             Integer.valueOf(strings[i + 3])
                     );
-                    i += 3;
+                    i += 4;
                     break;
                 case Entities.Rock.NAME:
                     entity = new Entities.Rock(
                             Integer.valueOf(strings[i + 1]),
                             Integer.valueOf(strings[i + 2])
                     );
-                    i += 2;
+                    i += 3;
                     break;
             }
             this.entities.add(entity);

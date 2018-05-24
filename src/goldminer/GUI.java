@@ -154,7 +154,7 @@ public class GUI {
                 long time = State.getTimeSync();
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     State.getInstance().move(GUI.this.playerID, time);
-                    GUI.this.connection.send("MOVE," + GUI.this.playerID + "," + time);
+                    GUI.this.connection.sendMove(GUI.this.playerID, time);
                 }
             }
         });
