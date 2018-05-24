@@ -241,6 +241,10 @@ public class State {
         return time;
     }
 
+    public int getScore(int playerID) {
+        return 10000;
+    }
+
     private void moveEmpty(Hook hook) {
         int distance = hook.getMaxDistance(hook.pendingRad);
         long delta = (long) (distance / Hook.DOWN_SPEED);

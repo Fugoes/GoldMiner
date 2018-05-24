@@ -4,6 +4,16 @@ import util.FP;
 
 public class Main {
     public static void main(String[] argv) {
+        if (argv.length == 0) {
+            GUI gui = new GUI(0);
+            gui.startTimerTask(30);
+            State.getInstance().init();
+            State.getInstance().randomInit();
+            State.getInstance().start();
+            gui.beginGameScreen();
+            return;
+        }
+
         int playerID = -1;
         switch (argv.length) {
             case 1:
