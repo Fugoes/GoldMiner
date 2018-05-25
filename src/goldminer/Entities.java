@@ -12,6 +12,8 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
         int radius;
         int speedFactor;
         int score;
+        int playerID;
+        long pendingEndTime;
         long takenTime;
 
         EntityBase() {
@@ -23,6 +25,7 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
             this.radius = radius;
             this.speedFactor = speedFactor;
             this.score = score;
+            this.playerID = -1;
             this.takenTime = Long.MAX_VALUE;
         }
 
@@ -34,6 +37,8 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
             result.radius = this.radius;
             result.speedFactor = this.speedFactor;
             result.score = this.score;
+            result.playerID = this.playerID;
+            result.pendingEndTime = this.pendingEndTime;
             result.takenTime = this.takenTime;
             return result;
         }

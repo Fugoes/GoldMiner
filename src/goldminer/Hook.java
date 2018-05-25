@@ -22,6 +22,7 @@ public class Hook implements Cloneable, GUI.Paintable {
             = ResTools.shrinkTo(ResTools.getImageFromRes("/hook.png"), 70, 50);
     static final double DOWN_SPEED = 0.5;
 
+    int playerID;
     int x;
     int y;
     long pendingBeginTime;
@@ -31,7 +32,8 @@ public class Hook implements Cloneable, GUI.Paintable {
 
     int pendingEntityId;
 
-    Hook(int x, int y) {
+    Hook(int playerID, int x, int y) {
+        this.playerID = playerID;
         this.x = x;
         this.y = y;
         this.pendingBeginTime = 0;
@@ -112,6 +114,7 @@ public class Hook implements Cloneable, GUI.Paintable {
     @Override
     protected Hook clone() throws CloneNotSupportedException {
         Hook result = (Hook) super.clone();
+        result.playerID = this.playerID;
         result.x = this.x;
         result.y = this.y;
         result.pendingBeginTime = this.pendingBeginTime;

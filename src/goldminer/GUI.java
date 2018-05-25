@@ -145,8 +145,9 @@ public class GUI {
             state.traverseHook(hook -> hook.paint(bufferedG, state, time));
             bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 45));
             bufferedG.setColor(Color.BLACK);
-            bufferedG.drawString("Score: " + state.getScore(0), 20, 60);
-            bufferedG.drawString("Score: " + state.getScore(1), 1600, 60);
+            int[] scores = state.getScores(time);
+            bufferedG.drawString("Score: " + scores[0], 20, 60);
+            bufferedG.drawString("Score: " + scores[1], 1600, 60);
             String s = Long.toString(time / 1000) + " S";
             Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
             bufferedG.drawString(s, 1920 / 2 - (int) geom.getWidth() / 2, 60);

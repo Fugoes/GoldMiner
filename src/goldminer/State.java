@@ -20,8 +20,8 @@ public class State {
     Hook[] hooks = new Hook[2];
 
     public void init() {
-        this.hooks[0] = new Hook(860, 200);
-        this.hooks[1] = new Hook(1060, 200);
+        this.hooks[0] = new Hook(0, 860, 200);
+        this.hooks[1] = new Hook(1, 1060, 200);
     }
 
     public void randomInit() {
@@ -213,6 +213,20 @@ public class State {
         return State.instance;
     }
 
+    public int[] getScores(long time) {
+        int[] rs = new int[2];
+        rs[0] = 0;
+        rs[1] = 0;
+        for (Entities.EntityBase entity : this.entities) {
+            if (entity.playerID != -1) {
+                if (entity.pendingEndTime <= time) {
+                    rs[entity.playerID] += entity.score;
+                }
+            }
+        }
+        return rs;
+    }
+
     public void traverseHook(Consumer<Hook> func) {
         for (Hook hook : this.hooks) {
             func.accept(hook);
@@ -241,10 +255,6 @@ public class State {
         return time;
     }
 
-    public int getScore(int playerID) {
-        return 10000;
-    }
-
     private void moveEmpty(Hook hook) {
         int distance = hook.getMaxDistance(hook.pendingRad);
         long delta = (long) (distance / Hook.DOWN_SPEED);
@@ -258,6 +268,8 @@ public class State {
         hook.pendingIntersectTime = hook.pendingBeginTime + 200 + delta;
         hook.pendingEndTime = hook.pendingIntersectTime + 200 + delta * this.entities.get(t.t2).speedFactor;
         hook.pendingEntityId = t.t2;
+        this.entities.get(hook.pendingEntityId).playerID = hook.playerID;
+        this.entities.get(hook.pendingEntityId).pendingEndTime = hook.pendingEndTime;
         this.entities.get(hook.pendingEntityId).takenTime = hook.pendingIntersectTime;
     }
 
