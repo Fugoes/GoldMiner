@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class GUI {
+    final static long END_TIME = 60 * 1000;
     final static Font FONT = ResTools.getFontFromRes("/xkcd.otf");
 
     final Dimension vDim = new Dimension(1920, 1080);
@@ -141,17 +142,28 @@ public class GUI {
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
             long time = State.getTimeSync();
             State state = State.getSnapshot();
-            state.traverseEntities(entity -> entity.paint(bufferedG, state, time));
-            state.traverseHook(hook -> hook.paint(bufferedG, state, time));
-            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 45));
-            bufferedG.setColor(Color.BLACK);
-            int[] scores = state.getScores(time);
-            bufferedG.drawString("Score: " + scores[0], 20, 60);
-            bufferedG.drawString("Score: " + scores[1], 1600, 60);
-            String s = Long.toString(time / 1000) + " S";
-            Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
-            bufferedG.drawString(s, 1920 / 2 - (int) geom.getWidth() / 2, 60);
-            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+            if (time >= GUI.END_TIME) {
+                int[] scores = state.getScores(GUI.END_TIME);
+                if (scores[0] > scores[1]) {
+                    GUI.this.beginResultScreen(0);
+                } else if (scores[0] < scores[1]) {
+                    GUI.this.beginResultScreen(1);
+                } else {
+                    GUI.this.beginResultScreen(-1);
+                }
+            } else {
+                state.traverseEntities(entity -> entity.paint(bufferedG, state, time));
+                state.traverseHook(hook -> hook.paint(bufferedG, state, time));
+                bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 45));
+                bufferedG.setColor(Color.BLACK);
+                int[] scores = state.getScores(time);
+                bufferedG.drawString("Score: " + scores[0], 20, 60);
+                bufferedG.drawString("Score: " + scores[1], 1600, 60);
+                String s = Long.toString(time / 1000) + " S";
+                Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+                bufferedG.drawString(s, 1920 / 2 - (int) geom.getWidth() / 2, 60);
+                g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+            }
         });
         this.frame.addKeyListener(new KeyAdapter() {
             @Override
@@ -161,6 +173,41 @@ public class GUI {
                     State.getInstance().move(GUI.this.playerID, time);
                     GUI.this.connection.sendMove(GUI.this.playerID, time);
                 }
+            }
+        });
+    }
+
+    void beginResultScreen(int playerID) {
+        this.frame.setPaintFunction(g -> {
+            int width, height;
+            synchronized (GUI.this.rDim) {
+                width = GUI.this.rDim.width;
+                height = GUI.this.rDim.height;
+            }
+            Graphics bufferedG = GUI.this.image.getGraphics();
+            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 45));
+            bufferedG.setColor(Color.BLACK);
+            if (playerID == -1) {
+                String s = "Draw !";
+                Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+                bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                        GUI.this.vDim.height / 2);
+            } else {
+                String s;
+                if (playerID == GUI.this.playerID) {
+                    s = "You won !";
+                } else {
+                    s = "You lose !";
+                }
+                Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+                bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                        GUI.this.vDim.height / 2);
+            }
+            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+        });
+        this.frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
             }
         });
     }
