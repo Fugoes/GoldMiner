@@ -195,9 +195,9 @@ public class GUI {
             } else {
                 String s;
                 if (playerID == GUI.this.playerID) {
-                    s = "You won !";
+                    s = "You  won !";
                 } else {
-                    s = "You lose !";
+                    s = "You  lose !";
                 }
                 Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
                 bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
