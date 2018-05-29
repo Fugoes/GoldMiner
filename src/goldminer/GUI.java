@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class GUI {
-    final static long END_TIME = 60 * 1000;
+    final static long END_TIME = 5 * 1000;
     final static Font FONT = ResTools.getFontFromRes("/xkcd.otf");
 
     final Dimension vDim = new Dimension(1920, 1080);
@@ -69,34 +69,34 @@ public class GUI {
             synchronized (GUI.this.rDim) {
                 width = GUI.this.rDim.width;
                 height = GUI.this.rDim.height;
-                Graphics bufferedG = GUI.this.image.getGraphics();
-                bufferedG.setColor(Color.WHITE);
-                bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
-                bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 100));
-                long time = Calendar.getInstance().getTimeInMillis() - zeroTime;
-                if (time < 3000) {
-                    bufferedG.setColor(Color.BLACK);
-                } else {
-                    int t = (int) (255 - 255 * (5000 - time) / 2000.0);
-                    t = t < 256 ? t : 255;
-                    t = t >= 0 ? t : 0;
-                    bufferedG.setColor(new Color(t, t, t));
-                }
-                geom = bufferedG.getFontMetrics().getStringBounds("Gold  Miner", bufferedG);
-                bufferedG.drawString(
-                        "Gold  Miner",
-                        GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
-                        GUI.this.vDim.height / 2
-                );
-                bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 40));
-                geom = bufferedG.getFontMetrics().getStringBounds("Created  by  Fugoes  with  Love", bufferedG);
-                bufferedG.drawString(
-                        "Created  by  Fugoes  with  Love",
-                        GUI.this.vDim.width - (int) geom.getWidth() - 10,
-                        GUI.this.vDim.height - 10
-                );
-                g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
             }
+            Graphics bufferedG = GUI.this.image.getGraphics();
+            bufferedG.setColor(Color.WHITE);
+            bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
+            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 100));
+            long time = Calendar.getInstance().getTimeInMillis() - zeroTime;
+            if (time < 3000) {
+                bufferedG.setColor(Color.BLACK);
+            } else {
+                int t = (int) (255 - 255 * (5000 - time) / 2000.0);
+                t = t < 256 ? t : 255;
+                t = t >= 0 ? t : 0;
+                bufferedG.setColor(new Color(t, t, t));
+            }
+            geom = bufferedG.getFontMetrics().getStringBounds("Gold  Miner", bufferedG);
+            bufferedG.drawString(
+                    "Gold  Miner",
+                    GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                    GUI.this.vDim.height / 2
+            );
+            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 40));
+            geom = bufferedG.getFontMetrics().getStringBounds("Created  by  Fugoes  with  Love", bufferedG);
+            bufferedG.drawString(
+                    "Created  by  Fugoes  with  Love",
+                    GUI.this.vDim.width - (int) geom.getWidth() - 10,
+                    GUI.this.vDim.height - 10
+            );
+            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
         });
     }
 
@@ -107,26 +107,26 @@ public class GUI {
             synchronized (GUI.this.rDim) {
                 width = GUI.this.rDim.width;
                 height = GUI.this.rDim.height;
-                Graphics bufferedG = GUI.this.image.getGraphics();
-                bufferedG.setColor(Color.WHITE);
-                bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
-                bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 100));
-                bufferedG.setColor(Color.BLACK);
-                geom = bufferedG.getFontMetrics().getStringBounds("Waiting  for  Connection...", bufferedG);
-                bufferedG.drawString(
-                        "Waiting  for  Connection...",
-                        GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
-                        GUI.this.vDim.height / 2
-                );
-                bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 40));
-                geom = bufferedG.getFontMetrics().getStringBounds("Created  by  Fugoes  with  Love", bufferedG);
-                bufferedG.drawString(
-                        "Created  by  Fugoes  with  Love",
-                        GUI.this.vDim.width - (int) geom.getWidth() - 10,
-                        GUI.this.vDim.height - 10
-                );
-                g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
             }
+            Graphics bufferedG = GUI.this.image.getGraphics();
+            bufferedG.setColor(Color.WHITE);
+            bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
+            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 100));
+            bufferedG.setColor(Color.BLACK);
+            geom = bufferedG.getFontMetrics().getStringBounds("Waiting  for  Connection...", bufferedG);
+            bufferedG.drawString(
+                    "Waiting  for  Connection...",
+                    GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                    GUI.this.vDim.height / 2
+            );
+            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 40));
+            geom = bufferedG.getFontMetrics().getStringBounds("Created  by  Fugoes  with  Love", bufferedG);
+            bufferedG.drawString(
+                    "Created  by  Fugoes  with  Love",
+                    GUI.this.vDim.width - (int) geom.getWidth() - 10,
+                    GUI.this.vDim.height - 10
+            );
+            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
         });
     }
 
@@ -145,11 +145,11 @@ public class GUI {
             if (time >= GUI.END_TIME) {
                 int[] scores = state.getScores(GUI.END_TIME);
                 if (scores[0] > scores[1]) {
-                    GUI.this.beginResultScreen(0);
+                    GUI.this.beginResultScreen(0, scores[this.playerID]);
                 } else if (scores[0] < scores[1]) {
-                    GUI.this.beginResultScreen(1);
+                    GUI.this.beginResultScreen(1, scores[this.playerID]);
                 } else {
-                    GUI.this.beginResultScreen(-1);
+                    GUI.this.beginResultScreen(-1, scores[this.playerID]);
                 }
             } else {
                 state.traverseEntities(entity -> entity.paint(bufferedG, state, time));
@@ -177,37 +177,61 @@ public class GUI {
         });
     }
 
-    void beginResultScreen(int playerID) {
+    void beginResultScreen(int playerID, int score) {
+        StringBuilder stringBuilder = new StringBuilder();
         this.frame.setPaintFunction(g -> {
+            Rectangle2D geom;
+            String s;
             int width, height;
             synchronized (GUI.this.rDim) {
                 width = GUI.this.rDim.width;
                 height = GUI.this.rDim.height;
             }
             Graphics bufferedG = GUI.this.image.getGraphics();
+            bufferedG.setColor(Color.WHITE);
+            bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
             bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 45));
             bufferedG.setColor(Color.BLACK);
             if (playerID == -1) {
-                String s = "Draw !";
-                Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
-                bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
-                        GUI.this.vDim.height / 2);
+                s = "Draw !";
             } else {
-                String s;
                 if (playerID == GUI.this.playerID) {
                     s = "You  won !";
                 } else {
                     s = "You  lose !";
                 }
-                Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
-                bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
-                        GUI.this.vDim.height / 2);
             }
+            geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+            bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                    GUI.this.vDim.height / 2 - 2 * (int) geom.getHeight());
+            s = "Your  Score:  " + Integer.toString(score);
+            geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+            bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                    GUI.this.vDim.height / 2);
+            synchronized (stringBuilder) {
+                s = "Your  Name:  " + stringBuilder.toString();
+            }
+            geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+            bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                    GUI.this.vDim.height / 2 + 2 * (int) (geom.getHeight()));
             g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
         });
         this.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                synchronized (stringBuilder) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        System.out.println(stringBuilder.toString());
+                    } else {
+                        char c = e.getKeyChar();
+                        if ((c >= 'a' && c <= 'z')
+                                || (c >= 'A' && c <= 'Z')) {
+                            stringBuilder.append(e.getKeyChar());
+                        } else if (c == ' ') {
+                            stringBuilder.append("  ");
+                        }
+                    }
+                }
             }
         });
     }
