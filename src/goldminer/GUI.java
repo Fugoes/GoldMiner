@@ -145,11 +145,11 @@ public class GUI {
             if (time >= GUI.END_TIME) {
                 int[] scores = state.getScores(GUI.END_TIME);
                 if (scores[0] > scores[1]) {
-                    GUI.this.beginResultScreen(0, scores[this.playerID]);
+                    GUI.this.beginResultScreen(0, scores[this.playerID], scores[1 - this.playerID]);
                 } else if (scores[0] < scores[1]) {
-                    GUI.this.beginResultScreen(1, scores[this.playerID]);
+                    GUI.this.beginResultScreen(1, scores[this.playerID], scores[1 - this.playerID]);
                 } else {
-                    GUI.this.beginResultScreen(-1, scores[this.playerID]);
+                    GUI.this.beginResultScreen(-1, scores[this.playerID], scores[1 - this.playerID]);
                 }
             } else {
                 state.traverseEntities(entity -> entity.paint(bufferedG, state, time));
@@ -177,7 +177,7 @@ public class GUI {
         });
     }
 
-    void beginResultScreen(int playerID, int score) {
+    void beginResultScreen(int playerID, int score, int theOtherScore) {
         StringBuilder stringBuilder = new StringBuilder();
         this.frame.setPaintFunction(g -> {
             Rectangle2D geom;
@@ -203,17 +203,21 @@ public class GUI {
             }
             geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
             bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
-                    GUI.this.vDim.height / 2 - 2 * (int) geom.getHeight());
+                    GUI.this.vDim.height / 2 - 3 * (int) geom.getHeight());
+            s = "Opponent  player's  Score:  " + Integer.toString(theOtherScore);
+            geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+            bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                    GUI.this.vDim.height / 2 - (int) geom.getHeight());
             s = "Your  Score:  " + Integer.toString(score);
             geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
             bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
-                    GUI.this.vDim.height / 2);
+                    GUI.this.vDim.height / 2 + (int) geom.getHeight());
             synchronized (stringBuilder) {
                 s = "Your  Name:  " + stringBuilder.toString();
             }
             geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
             bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
-                    GUI.this.vDim.height / 2 + 2 * (int) (geom.getHeight()));
+                    GUI.this.vDim.height / 2 + 3 * (int) (geom.getHeight()));
             g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
         });
         this.frame.addKeyListener(new KeyAdapter() {
