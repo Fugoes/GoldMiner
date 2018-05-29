@@ -1,6 +1,8 @@
 package goldminer;
 
+import util.FP;
 import util.ResTools;
+import util.Tuple2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +12,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.Calendar;
+import java.util.Optional;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -225,7 +230,7 @@ public class GUI {
             public void keyPressed(KeyEvent e) {
                 synchronized (stringBuilder) {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        System.out.println(stringBuilder.toString());
+                        GUI.this.beginBillboardScreen(stringBuilder.toString(), score);
                     } else {
                         char c = e.getKeyChar();
                         if ((c >= 'a' && c <= 'z')
@@ -236,6 +241,33 @@ public class GUI {
                         }
                     }
                 }
+            }
+        });
+    }
+
+    void beginBillboardScreen(String name, int score) {
+        FP.liftExp(() -> {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("billboard.txt", true));
+            bw.write(name + "," + score + "\n");
+            bw.flush();
+            bw.close();
+        }).run();
+        BufferedReader br = FP.liftExp(() -> new BufferedReader(new FileReader("billboard.txt"))).get().get();
+        Vector<Tuple2<String, Integer>> history = new Vector<>();
+        while (true) {
+            Optional<String> l = FP.liftExp(br::readLine).get();
+            l.ifPresent(line -> {
+                String[] ss = line.split(",");
+                history.add(new Tuple2<>(ss[0], Integer.valueOf(ss[1])));
+            });
+            if (!l.isPresent()) {
+                break;
+            }
+        }
+        System.out.println(history);
+        this.frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
             }
         });
     }
