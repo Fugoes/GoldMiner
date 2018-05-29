@@ -13,9 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Calendar;
-import java.util.Optional;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -264,7 +262,85 @@ public class GUI {
                 break;
             }
         }
-        System.out.println(history);
+        FP.liftExp(br::close).run();
+        // Collections.sort is stable
+        Collections.sort(history, (o1, o2) -> {
+            if (o1.t2 > o2.t2) {
+                return -1;
+            } else if (o1.t2 < o2.t2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        Map<String, Integer> playerToScore = new HashMap<>();
+        for (Tuple2<String, Integer> s : history) {
+            if (playerToScore.containsKey(s.t1)) {
+                playerToScore.replace(s.t1, playerToScore.get(s.t1) + s.t2);
+            } else {
+                playerToScore.put(s.t1, s.t2);
+            }
+        }
+        Vector<Tuple2<String, Integer>> historyOfPlayer = new Vector<>();
+        playerToScore.forEach((player, s) -> {
+            historyOfPlayer.add(new Tuple2<>(player, s));
+        });
+        Collections.sort(historyOfPlayer, (o1, o2) -> {
+            if (o1.t2 > o2.t2) {
+                return -1;
+            } else if (o1.t2 < o2.t2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
+        StringBuilder sb;
+        sb = new StringBuilder("Score\n\n");
+        for (int i = 0; i < 5; i++) {
+            if (i < history.size()) {
+                Tuple2<String, Integer> entry = history.get(i);
+                sb.append(entry.t2 + "\n");
+            } else {
+                break;
+            }
+        }
+        String historyString = sb.toString();
+
+        sb = new StringBuilder("Player\n\n");
+        for (int i = 0; i < 5; i++) {
+            if (i < history.size()) {
+                Tuple2<String, Integer> entry = history.get(i);
+                sb.append(entry.t1 + "\n");
+            } else {
+                break;
+            }
+        }
+        String historyOfPlayerString = sb.toString();
+
+        this.frame.setPaintFunction(g -> {
+            Rectangle2D geom;
+            String s;
+            int width, height;
+            synchronized (GUI.this.rDim) {
+                width = GUI.this.rDim.width;
+                height = GUI.this.rDim.height;
+            }
+            Graphics bufferedG = GUI.this.image.getGraphics();
+            bufferedG.setColor(Color.WHITE);
+            bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
+            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 60));
+            bufferedG.setColor(Color.BLACK);
+
+            s = "Billboard";
+            geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+            bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2), 40 + (int) geom.getHeight());
+
+            GUI.drawString(bufferedG, historyOfPlayerString, 100, 200);
+            GUI.drawString(bufferedG, historyString, 300, 200);
+
+            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+        });
         this.frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -314,6 +390,13 @@ public class GUI {
             }
         } else {
             return true;
+        }
+    }
+
+    private static void drawString(Graphics g, String s, int x, int y) {
+        for (String line : s.split("\n")) {
+            g.drawString(line, x, y);
+            y += g.getFontMetrics().getHeight();
         }
     }
 }
