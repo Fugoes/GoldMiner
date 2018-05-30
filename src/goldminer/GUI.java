@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class GUI {
-    final static long END_TIME = 5 * 1000;
+    final static long END_TIME = 60 * 1000;
     final static Font FONT = ResTools.getFontFromRes("/xkcd.otf");
 
     final Dimension vDim = new Dimension(1920, 1080);
@@ -157,15 +157,20 @@ public class GUI {
                     GUI.this.beginResultScreen(-1, scores[this.playerID], scores[1 - this.playerID]);
                 }
             } else {
+                String s;
+                Rectangle2D geom;
                 state.traverseEntities(entity -> entity.paint(bufferedG, state, time));
                 state.traverseHook(hook -> hook.paint(bufferedG, state, time));
                 bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 45));
                 bufferedG.setColor(Color.BLACK);
                 int[] scores = state.getScores(time);
-                bufferedG.drawString("Score: " + scores[0], 20, 60);
-                bufferedG.drawString("Score: " + scores[1], 1600, 60);
-                String s = Long.toString(time / 1000) + " S";
-                Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+                s = "Score: " + scores[0];
+                bufferedG.drawString(s, 20, 60);
+                s = "Score: " + scores[1];
+                geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+                bufferedG.drawString(s, 1900 - (int) geom.getWidth(), 60);
+                s = Long.toString(time / 1000) + " S";
+                geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
                 bufferedG.drawString(s, 1920 / 2 - (int) geom.getWidth() / 2, 60);
                 g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
             }
