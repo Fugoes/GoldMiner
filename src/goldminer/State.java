@@ -187,7 +187,8 @@ public class State {
                     this.moveEmpty(hook);
                 } else {
                     if (anotherHook.pendingEntityId == rs.get(0).t2) {
-                        if (anotherHook.pendingIntersectTime < rs.get(0).t1) {
+                        if (anotherHook.pendingIntersectTime < rs.get(0).t1 ||
+                                (anotherHook.pendingIntersectTime == rs.get(0).t1 && playerID == 0)) {
                             if (rs.size() > 1) {
                                 this.moveNonEmpty(hook, rs.get(1));
                             } else {
