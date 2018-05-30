@@ -29,6 +29,8 @@ public class GUI {
     Connections.ConnectionBase connection;
 
     Frame frame;
+    long lastSpaceDownTime = 0;
+    boolean isPaused = false;
 
     interface Paintable {
         void paint(Graphics g, State state, long time);
@@ -172,14 +174,24 @@ public class GUI {
             @Override
             public void keyPressed(KeyEvent e) {
                 long time = State.getTimeSync();
+                long realTime = Calendar.getInstance().getTimeInMillis();
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_DOWN:
                         State.getInstance().move(GUI.this.playerID, time);
                         GUI.this.connection.sendMove(GUI.this.playerID, time);
                         break;
                     case KeyEvent.VK_SPACE:
-                        State.pause(time + 300);
-                        GUI.this.connection.sendPause(time + 300);
+                        if (GUI.this.lastSpaceDownTime + 400 < realTime) {
+                            GUI.this.lastSpaceDownTime = realTime;
+                            if (GUI.this.isPaused) {
+                                GUI.this.connection.sendResume();
+                                State.resume();
+                            } else {
+                                GUI.this.connection.sendPause(time + 300);
+                                State.pause(time + 300);
+                            }
+                            GUI.this.isPaused = !GUI.this.isPaused;
+                        }
                         break;
                 }
             }

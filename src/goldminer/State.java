@@ -280,6 +280,13 @@ public class State {
         }
     }
 
+    public static void resume() {
+        synchronized (State.instance) {
+            State.instance.zeroTime = Calendar.getInstance().getTimeInMillis() - State.instance.pauseTime;
+            State.instance.pauseTime = Long.MAX_VALUE;
+        }
+    }
+
     private void moveEmpty(Hook hook) {
         int distance = hook.getMaxDistance(hook.pendingRad);
         long delta = (long) (distance / Hook.DOWN_SPEED);

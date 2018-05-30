@@ -42,7 +42,8 @@ public class Main {
                         return State.getInstance().dumpEntities();
                     },
                     null,
-                    State::pause
+                    State::pause,
+                    State::resume
             );
         } else {
             gui.connection = new Connections.TCPClient(
@@ -58,7 +59,8 @@ public class Main {
                         State.getInstance().init();
                         State.getInstance().loadEntities(s.split(","));
                     },
-                    State::pause
+                    State::pause,
+                    State::resume
             );
         }
     }
