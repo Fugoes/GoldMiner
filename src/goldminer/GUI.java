@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class GUI {
-    final static long END_TIME = 60 * 1000;
+    final static long END_TIME = 1 * 1000;
     final static Font FONT = ResTools.getFontFromRes("/xkcd.otf");
 
     final Dimension vDim = new Dimension(1920, 1080);
@@ -170,7 +170,7 @@ public class GUI {
                 g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
             }
         });
-        this.frame.addKeyListener(new KeyAdapter() {
+        this.frame.setKeyAdapter(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 long time = State.getTimeSync();
@@ -241,19 +241,25 @@ public class GUI {
                     GUI.this.vDim.height / 2 + 3 * (int) (geom.getHeight()));
             g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
         });
-        this.frame.addKeyListener(new KeyAdapter() {
+        this.frame.setKeyAdapter(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 synchronized (stringBuilder) {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        GUI.this.beginBillboardScreen(stringBuilder.toString(), score);
+                        GUI.this.beginBillboardScreen(stringBuilder.toString().trim(), score);
+                    } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                        if (stringBuilder.length() > 0) {
+                            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                        }
                     } else {
                         char c = e.getKeyChar();
-                        if ((c >= 'a' && c <= 'z')
-                                || (c >= 'A' && c <= 'Z')) {
-                            stringBuilder.append(e.getKeyChar());
-                        } else if (c == ' ') {
-                            stringBuilder.append("  ");
+                        if (stringBuilder.length() < 12) {
+                            if ((c >= 'a' && c <= 'z')
+                                    || (c >= 'A' && c <= 'Z')) {
+                                stringBuilder.append(e.getKeyChar());
+                            } else if (c == ' ') {
+                                stringBuilder.append("  ");
+                            }
                         }
                     }
                 }
@@ -401,7 +407,7 @@ public class GUI {
 
             g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
         });
-        this.frame.addKeyListener(new KeyAdapter() {
+        this.frame.setKeyAdapter(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
             }
@@ -410,15 +416,31 @@ public class GUI {
 
     class Frame extends JFrame {
         AtomicReference<Consumer<Graphics>> paintFunctionRef = new AtomicReference<>();
+        AtomicReference<KeyAdapter> keyAdapterRef = new AtomicReference<>();
 
         Frame() {
             super("Gold Miner");
             this.paintFunctionRef.set(g -> {
             });
+            this.keyAdapterRef.set(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                }
+            });
+            this.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    Frame.this.keyAdapterRef.get().keyPressed(e);
+                }
+            });
         }
 
         public void setPaintFunction(Consumer<Graphics> paintFunction) {
             this.paintFunctionRef.set(paintFunction);
+        }
+
+        public void setKeyAdapter(KeyAdapter keyAdapter) {
+            this.keyAdapterRef.set(keyAdapter);
         }
 
         @Override
