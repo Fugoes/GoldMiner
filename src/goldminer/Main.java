@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] argv) {
         if (argv.length == 0) {
             GUI gui = new GUI(0);
-            gui.startTimerTask(30);
+            gui.startTimerTask(10);
             State.getInstance().init();
             State.getInstance().randomInit();
             State.getInstance().start();
@@ -24,7 +24,7 @@ public class Main {
                 break;
         }
         GUI gui = new GUI(playerID);
-        gui.startTimerTask(30);
+        gui.startTimerTask(10);
         gui.beginWelcomeScreen();
         FP.liftExp(() -> Thread.sleep(5000)).run();
         gui.beginWaitingConnectionScreen();

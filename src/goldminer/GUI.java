@@ -169,7 +169,7 @@ public class GUI {
                 s = "Score: " + scores[1];
                 geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
                 bufferedG.drawString(s, 1900 - (int) geom.getWidth(), 60);
-                s = Long.toString(time / 1000) + " S";
+                s = "-" + Long.toString(60 - time / 1000 >= 0 ? 60 - time / 1000 : 0) + " S";
                 geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
                 bufferedG.drawString(s, 1920 / 2 - (int) geom.getWidth() / 2, 60);
                 g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
