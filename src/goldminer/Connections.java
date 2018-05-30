@@ -24,6 +24,7 @@ public class Connections {
         Consumer<String> stateConsumer;
         Consumer<Long> pauseFunction;
         Runnable resumeFunction;
+        Runnable countDownFunction;
 
         ConnectionBase(boolean isMaster,
                        BiConsumer<Integer, Long> receiveMoveCallback,
@@ -31,7 +32,8 @@ public class Connections {
                        Supplier<String> stateSupplier,
                        Consumer<String> stateConsumer,
                        Consumer<Long> pauseFunction,
-                       Runnable resumeFunction) {
+                       Runnable resumeFunction,
+                       Runnable countDownFunction) {
             this.isMaster = isMaster;
             this.receiveMoveCallback = receiveMoveCallback;
             this.gameStartFunction = gameStartFunction;
@@ -39,6 +41,7 @@ public class Connections {
             this.stateConsumer = stateConsumer;
             this.pauseFunction = pauseFunction;
             this.resumeFunction = resumeFunction;
+            this.countDownFunction = countDownFunction;
         }
 
         abstract void sendMove(int playerID, long time);
@@ -84,7 +87,8 @@ public class Connections {
                   Supplier<String> stateSupplier,
                   Consumer<String> stateConsumer,
                   Consumer<Long> pauseFunction,
-                  Runnable resumeFunction) {
+                  Runnable resumeFunction,
+                  Runnable countDownFunction) {
             super(
                     true,
                     receiveMoveCallback,
@@ -92,7 +96,8 @@ public class Connections {
                     stateSupplier,
                     stateConsumer,
                     pauseFunction,
-                    resumeFunction
+                    resumeFunction,
+                    countDownFunction
             );
             this.port = port;
             new Thread(() -> {
@@ -100,9 +105,9 @@ public class Connections {
                 String state = this.stateSupplier.get();
                 this.out.println(state);
                 String answer = FP.liftExp(() -> this.in.readLine()).get().get();
+                this.countDownFunction.run();
                 if (answer.equals("START")) {
                     this.gameStartFunction.run();
-                    System.err.println("start");
                     this.mainLoop();
                 } else {
                     System.exit(-1);
@@ -157,7 +162,8 @@ public class Connections {
                 Supplier<String> stateSupplier,
                 Consumer<String> stateConsumer,
                 Consumer<Long> pauseFunction,
-                Runnable resumeFunction) {
+                Runnable resumeFunction,
+                Runnable countDownFunction) {
             super(
                     false,
                     receiveMoveCallback,
@@ -165,7 +171,8 @@ public class Connections {
                     stateSupplier,
                     stateConsumer,
                     pauseFunction,
-                    resumeFunction
+                    resumeFunction,
+                    countDownFunction
             );
             this.addr = addr;
             this.port = port;
@@ -174,6 +181,7 @@ public class Connections {
                 String state = this.receiveOneLine();
                 this.stateConsumer.accept(state);
                 this.out.println("START");
+                this.countDownFunction.run();
                 this.gameStartFunction.run();
                 this.mainLoop();
             }).start();

@@ -135,6 +135,28 @@ public class GUI {
         });
     }
 
+    void beginCountDownScreen() {
+        final long time = Calendar.getInstance().getTimeInMillis();
+        this.frame.setPaintFunction(g -> {
+            int width, height;
+            synchronized (GUI.this.rDim) {
+                width = GUI.this.rDim.width;
+                height = GUI.this.rDim.height;
+            }
+            Graphics bufferedG = GUI.this.image.getGraphics();
+            bufferedG.setColor(Color.WHITE);
+            bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
+            bufferedG.setColor(Color.BLACK);
+            bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 100));
+            int n = (int) ((Calendar.getInstance().getTimeInMillis() - time) / 1000);
+            n = 3 - n >= 0 ? 3 - n : 0;
+            String s = Integer.toString(n);
+            Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
+            bufferedG.drawString(s, 1920 / 2 - (int) geom.getWidth() / 2, 1080 / 2);
+            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+        });
+    }
+
     void beginGameScreen() {
         this.frame.setPaintFunction(g -> {
             int width, height;

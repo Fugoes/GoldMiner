@@ -43,7 +43,11 @@ public class Main {
                     },
                     null,
                     State::pause,
-                    State::resume
+                    State::resume,
+                    () -> {
+                        gui.beginCountDownScreen();
+                        FP.liftExp(() -> Thread.sleep(3000)).run();
+                    }
             );
         } else {
             gui.connection = new Connections.TCPClient(
@@ -60,7 +64,11 @@ public class Main {
                         State.getInstance().loadEntities(s.split(","));
                     },
                     State::pause,
-                    State::resume
+                    State::resume,
+                    () -> {
+                        gui.beginCountDownScreen();
+                        FP.liftExp(() -> Thread.sleep(3000)).run();
+                    }
             );
         }
     }
