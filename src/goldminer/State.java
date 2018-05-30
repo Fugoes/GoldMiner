@@ -30,9 +30,6 @@ public class State {
         Entities.EntityBase newEntity = null;
         while (true) {
             if (this.entities.size() == 14) {
-                for (Entities.EntityBase entity : this.entities) {
-                    System.out.println(entity.getClass().toString());
-                }
                 return;
             }
             switch (this.entities.size()) {
