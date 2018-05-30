@@ -296,18 +296,8 @@ public class GUI {
         });
 
         StringBuilder sb;
-        sb = new StringBuilder("Score\n\n");
-        for (int i = 0; i < 5; i++) {
-            if (i < history.size()) {
-                Tuple2<String, Integer> entry = history.get(i);
-                sb.append(entry.t2 + "\n");
-            } else {
-                break;
-            }
-        }
-        String historyString = sb.toString();
 
-        sb = new StringBuilder("Player\n\n");
+        sb = new StringBuilder("Player\n\n\n");
         for (int i = 0; i < 5; i++) {
             if (i < history.size()) {
                 Tuple2<String, Integer> entry = history.get(i);
@@ -316,7 +306,40 @@ public class GUI {
                 break;
             }
         }
-        String historyOfPlayerString = sb.toString();
+        String historyPlayers = sb.toString();
+
+        sb = new StringBuilder("Score\n\n\n");
+        for (int i = 0; i < 5; i++) {
+            if (i < history.size()) {
+                Tuple2<String, Integer> entry = history.get(i);
+                sb.append(entry.t2 + "\n");
+            } else {
+                break;
+            }
+        }
+        String historyScores = sb.toString();
+
+        sb = new StringBuilder("Player\n\n\n");
+        for (int i = 0; i < 5; i++) {
+            if (i < historyOfPlayer.size()) {
+                Tuple2<String, Integer> entry = historyOfPlayer.get(i);
+                sb.append(entry.t1 + "\n");
+            } else {
+                break;
+            }
+        }
+        String historyOfPlayerPlayers = sb.toString();
+
+        sb = new StringBuilder("Total\nScore\n\n");
+        for (int i = 0; i < 5; i++) {
+            if (i < historyOfPlayer.size()) {
+                Tuple2<String, Integer> entry = historyOfPlayer.get(i);
+                sb.append(entry.t2 + "\n");
+            } else {
+                break;
+            }
+        }
+        String historyOfPlayerScores = sb.toString();
 
         this.frame.setPaintFunction(g -> {
             Rectangle2D geom;
@@ -334,10 +357,29 @@ public class GUI {
 
             s = "Billboard";
             geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
-            bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2), 40 + (int) geom.getHeight());
+            bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
+                    40 + 2 * ((int) geom.getHeight()));
 
-            GUI.drawString(bufferedG, historyOfPlayerString, 100, 200);
-            GUI.drawString(bufferedG, historyString, 300, 200);
+            Tuple2<Integer, Integer> t1;
+            Tuple2<Integer, Integer> t2;
+
+            t1 = GUI.getStringBounds(historyPlayers, bufferedG);
+            t2 = GUI.getStringBounds(historyScores, bufferedG);
+            GUI.drawString(bufferedG, historyPlayers,
+                    GUI.this.vDim.width / 4 - ((t1.t1 + t2.t1 + 50) / 2),
+                    GUI.this.vDim.height / 2 - ((int) geom.getHeight()) * 5 / 2);
+            GUI.drawString(bufferedG, historyScores,
+                    GUI.this.vDim.width / 4 - ((t1.t1 + t2.t1 + 50) / 2) + t1.t1 + 50,
+                    GUI.this.vDim.height / 2 - ((int) geom.getHeight()) * 5 / 2);
+
+            t1 = GUI.getStringBounds(historyOfPlayerPlayers, bufferedG);
+            t2 = GUI.getStringBounds(historyOfPlayerScores, bufferedG);
+            GUI.drawString(bufferedG, historyOfPlayerPlayers,
+                    GUI.this.vDim.width * 3 / 4 - ((t1.t1 + t2.t1 + 50) / 2),
+                    GUI.this.vDim.height / 2 - ((int) geom.getHeight()) * 5 / 2);
+            GUI.drawString(bufferedG, historyOfPlayerScores,
+                    GUI.this.vDim.width * 3 / 4 - ((t1.t1 + t2.t1 + 50) / 2) + t1.t1 + 50,
+                    GUI.this.vDim.height / 2 - ((int) geom.getHeight()) * 5 / 2);
 
             g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
         });
@@ -398,5 +440,17 @@ public class GUI {
             g.drawString(line, x, y);
             y += g.getFontMetrics().getHeight();
         }
+    }
+
+    private static Tuple2 getStringBounds(String s, Graphics g) {
+        double width = 0, height = 0;
+        for (String line : s.split("\n")) {
+            Rectangle2D geom = g.getFontMetrics().getStringBounds(line, g);
+            if (geom.getWidth() > width) {
+                width = geom.getWidth();
+            }
+            height += geom.getHeight();
+        }
+        return new Tuple2<>((int) width, (int) height);
     }
 }
