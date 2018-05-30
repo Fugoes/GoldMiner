@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class GUI {
-    final static long END_TIME = 5 * 1000;
+    final static long END_TIME = 1 * 1000;
     final static Font FONT = ResTools.getFontFromRes("/xkcd.otf");
 
     final Dimension vDim = new Dimension(1920, 1080);

@@ -204,7 +204,7 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
     }
 
     public static class Pig extends Entities.EntityBase {
-        static final int RADIUS = 50;
+        static final int RADIUS = 40;
         static final int SPEED_FACTOR = 1;
         static final int SCORE = 5;
         static final String NAME = "Pig";

@@ -37,12 +37,29 @@ public class State {
             }
             switch (this.entities.size()) {
                 case 0:
-                case 1:
-                case 2:
                     newEntity = new Entities.Pig(
                             this.randomX(Entities.Pig.RADIUS, random),
-                            this.randomY(Entities.Pig.RADIUS, random)
+                            320
                     );
+                    break;
+                case 1:
+                    newEntity = new Entities.Pig(
+                            this.randomX(Entities.Pig.RADIUS, random),
+                            1080 - Entities.Pig.RADIUS
+                    );
+                    break;
+                case 2:
+                    if (random.nextBoolean()) {
+                        newEntity = new Entities.Pig(
+                                this.randomX(Entities.Pig.RADIUS, random),
+                                1080 - 2 * Entities.Pig.RADIUS - 6
+                        );
+                    } else {
+                        newEntity = new Entities.Pig(
+                                this.randomX(Entities.Pig.RADIUS, random),
+                                320 + 2 * Entities.Pig.RADIUS + 6
+                        );
+                    }
                     break;
                 case 3:
                 case 4:
@@ -327,6 +344,6 @@ public class State {
 
     private int randomY(int radius, Random random) {
         radius += 10;
-        return random.nextInt(1080 - 2 * radius - 300) + 300;
+        return random.nextInt(1080 - 2 * radius - 320) + 320;
     }
 }
