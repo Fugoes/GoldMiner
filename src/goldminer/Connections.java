@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -50,25 +51,30 @@ public class Connections {
 
         abstract void sendResume();
 
-        abstract String receiveOneLine();
+        abstract Optional<String> receiveOneLine();
 
         void mainLoop() {
             while (true) {
-                String msg = this.receiveOneLine();
-                System.err.println(msg);
-                String[] args = msg.split(",");
-                switch (args[0]) {
-                    case "MOVE":
-                        this.receiveMoveCallback.accept(Integer.valueOf(args[1]), Long.valueOf(args[2]));
-                        break;
-                    case "PAUSE":
-                        this.pauseFunction.accept(Long.valueOf(args[1]));
-                        break;
-                    case "RESUME":
-                        this.resumeFunction.run();
-                        break;
-                    default:
-                        break;
+                Optional<String> msg = this.receiveOneLine();
+                if (msg.isPresent()) {
+                    String _msg = msg.get();
+                    System.err.println(_msg);
+                    String[] args = _msg.split(",");
+                    switch (args[0]) {
+                        case "MOVE":
+                            this.receiveMoveCallback.accept(Integer.valueOf(args[1]), Long.valueOf(args[2]));
+                            break;
+                        case "PAUSE":
+                            this.pauseFunction.accept(Long.valueOf(args[1]));
+                            break;
+                        case "RESUME":
+                            this.resumeFunction.run();
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    return;
                 }
             }
         }
@@ -131,8 +137,8 @@ public class Connections {
         }
 
         @Override
-        String receiveOneLine() {
-            return FP.liftExp(() -> this.in.readLine()).get().get();
+        Optional<String> receiveOneLine() {
+            return FP.liftExp(() -> this.in.readLine()).get();
         }
 
         private void waitForUp() {
@@ -178,12 +184,14 @@ public class Connections {
             this.port = port;
             new Thread(() -> {
                 this.waitForUp();
-                String state = this.receiveOneLine();
-                this.stateConsumer.accept(state);
-                this.out.println("START");
-                this.countDownFunction.run();
-                this.gameStartFunction.run();
-                this.mainLoop();
+                Optional<String> state = this.receiveOneLine();
+                state.ifPresent(_state -> {
+                    this.stateConsumer.accept(_state);
+                    this.out.println("START");
+                    this.countDownFunction.run();
+                    this.gameStartFunction.run();
+                    this.mainLoop();
+                });
             }).start();
         }
 
@@ -203,8 +211,8 @@ public class Connections {
         }
 
         @Override
-        String receiveOneLine() {
-            return FP.liftExp(() -> this.in.readLine()).get().get();
+        Optional<String> receiveOneLine() {
+            return FP.liftExp(() -> this.in.readLine()).get();
         }
 
         private void waitForUp() {

@@ -43,14 +43,14 @@ public class State {
                 case 1:
                     newEntity = new Entities.Pig(
                             this.randomX(Entities.Pig.RADIUS, random),
-                            1080 - Entities.Pig.RADIUS
+                            1080 - Entities.Pig.RADIUS - 25
                     );
                     break;
                 case 2:
                     if (random.nextBoolean()) {
                         newEntity = new Entities.Pig(
                                 this.randomX(Entities.Pig.RADIUS, random),
-                                1080 - 2 * Entities.Pig.RADIUS - 6
+                                1080 - 3 * Entities.Pig.RADIUS - 30
                         );
                     } else {
                         newEntity = new Entities.Pig(
