@@ -277,7 +277,7 @@ public abstract class Entities implements Cloneable, GUI.Paintable {
                 int distance = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY) - Hook.IMAGE.getHeight() / 2;
                 long timeDelta = (long) (distance / Hook.DOWN_SPEED);
                 int x1 = this.getX(hook.pendingBeginTime + 200 + timeDelta);
-                if (Math.abs(x0 - x1) < Pig.RADIUS + Hook.IMAGE.getWidth() / 3) {
+                if (Math.abs(x0 - x1) < Pig.RADIUS + 10 + Hook.IMAGE.getWidth() / 3) {
                     return distance;
                 } else {
                     return -1;

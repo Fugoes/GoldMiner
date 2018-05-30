@@ -326,7 +326,7 @@ public class GUI {
 
         StringBuilder sb;
 
-        sb = new StringBuilder("Player\n\n\n");
+        sb = new StringBuilder("\nPlayer\n\n");
         for (int i = 0; i < 5; i++) {
             if (i < history.size()) {
                 Tuple2<String, Integer> entry = history.get(i);
@@ -337,7 +337,7 @@ public class GUI {
         }
         String historyPlayers = sb.toString();
 
-        sb = new StringBuilder("Score\n\n\n");
+        sb = new StringBuilder("\nScore\n\n");
         for (int i = 0; i < 5; i++) {
             if (i < history.size()) {
                 Tuple2<String, Integer> entry = history.get(i);
@@ -348,7 +348,7 @@ public class GUI {
         }
         String historyScores = sb.toString();
 
-        sb = new StringBuilder("Player\n\n\n");
+        sb = new StringBuilder("\nPlayer\n\n");
         for (int i = 0; i < 5; i++) {
             if (i < historyOfPlayer.size()) {
                 Tuple2<String, Integer> entry = historyOfPlayer.get(i);

@@ -26,7 +26,7 @@ public class Main {
         GUI gui = new GUI(playerID);
         gui.startTimerTask(30);
         gui.beginWelcomeScreen();
-        FP.liftExp(() -> Thread.sleep(4000)).run();
+        FP.liftExp(() -> Thread.sleep(5000)).run();
         gui.beginWaitingConnectionScreen();
         if (playerID == 0) {
             gui.connection = new Connections.TCPServer(
