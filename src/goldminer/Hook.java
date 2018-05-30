@@ -3,6 +3,7 @@ package goldminer;
 import util.Coordinate;
 import util.ResTools;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
@@ -20,6 +21,12 @@ public class Hook implements Cloneable, GUI.Paintable {
     static final int MAX_DEGREE = 88;
     static final BufferedImage IMAGE
             = ResTools.shrinkTo(ResTools.getImageFromRes("/hook.png"), 70, 50);
+    static final BufferedImage IMAGE_BOY
+            = ResTools.shrinkTo(ResTools.getImageFromRes("/boy.png"), 60, 130);
+    static final BufferedImage IMAGE_GIRL
+            = ResTools.shrinkTo(ResTools.getImageFromRes("/girl.png"), 60, 130);
+    static final BufferedImage IMAGE_BASE
+            = ResTools.shrinkTo(ResTools.getImageFromRes("/base.png"), 100, 50);
     static final double DOWN_SPEED = 0.5;
 
     int playerID;
@@ -44,6 +51,27 @@ public class Hook implements Cloneable, GUI.Paintable {
 
     @Override
     public void paint(Graphics g, State state, long time) {
+        if (this.playerID == 0) {
+            g.drawImage(
+                    Hook.IMAGE_BOY,
+                    this.x - Hook.IMAGE_BOY.getWidth(),
+                    this.y - Hook.IMAGE_BOY.getHeight(),
+                    null
+            );
+        } else {
+            g.drawImage(
+                    Hook.IMAGE_GIRL,
+                    this.x + Hook.IMAGE_GIRL.getWidth() / 2 - 10,
+                    this.y - Hook.IMAGE_GIRL.getHeight(),
+                    null
+            );
+        }
+        g.drawImage(
+                Hook.IMAGE_BASE,
+                this.x - Hook.IMAGE_BASE.getWidth() / 2,
+                this.y - Hook.IMAGE_BASE.getHeight() + 20,
+                null
+        );
         if (time < this.pendingBeginTime) {
             Coordinate c = new Coordinate(Hook.IMAGE.getWidth() / 2, 0);
             BufferedImage image = ResTools.rotateByRad(Hook.IMAGE, this.pendingRad, c);
