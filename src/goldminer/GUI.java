@@ -20,6 +20,9 @@ import java.util.function.Consumer;
 public class GUI {
     final static long END_TIME = 60 * 1000;
     final static Font FONT = ResTools.getFontFromRes("/xkcd.otf");
+    final static BufferedImage IMAGE_ARROW_LEFT
+            = ResTools.shrinkTo(ResTools.getImageFromRes("/arrow.png"), 80, 50);
+    final static BufferedImage IMAGE_ARROW_RIGHT = ResTools.flipByY(IMAGE_ARROW_LEFT);
 
     final Dimension vDim = new Dimension(1920, 1080);
     final Dimension rDim = new Dimension(1920, 1080);
@@ -169,6 +172,18 @@ public class GUI {
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
             long time = State.getTimeSync();
             State state = State.getSnapshot();
+            {
+                Hook hook = state.hooks[GUI.this.playerID];
+                if (GUI.this.playerID == 0) {
+                    bufferedG.drawImage(GUI.IMAGE_ARROW_LEFT,
+                            hook.x - Hook.IMAGE_BOY.getWidth() - GUI.IMAGE_ARROW_LEFT.getWidth(),
+                            hook.y - Hook.IMAGE_BOY.getHeight() - GUI.IMAGE_ARROW_LEFT.getHeight(), null);
+                } else {
+                    bufferedG.drawImage(GUI.IMAGE_ARROW_RIGHT,
+                            hook.x + Hook.IMAGE_GIRL.getWidth(),
+                            hook.y - Hook.IMAGE_GIRL.getHeight() - GUI.IMAGE_ARROW_RIGHT.getHeight(), null);
+                }
+            }
             if (time >= GUI.END_TIME) {
                 int[] scores = state.getScores(GUI.END_TIME);
                 if (scores[0] > scores[1]) {
