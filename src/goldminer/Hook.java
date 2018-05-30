@@ -27,6 +27,8 @@ public class Hook implements Cloneable, GUI.Paintable {
             = ResTools.shrinkTo(ResTools.getImageFromRes("/girl.png"), 60, 130);
     static final BufferedImage IMAGE_BASE
             = ResTools.shrinkTo(ResTools.getImageFromRes("/base.png"), 100, 50);
+    static final BufferedImage IMAGE_GROUND
+            = ResTools.shrinkTo(ResTools.getImageFromRes("/ground.png"), 1920, 10);
     static final double DOWN_SPEED = 0.5;
 
     int playerID;
@@ -56,6 +58,12 @@ public class Hook implements Cloneable, GUI.Paintable {
                     Hook.IMAGE_BOY,
                     this.x - Hook.IMAGE_BOY.getWidth(),
                     this.y - Hook.IMAGE_BOY.getHeight(),
+                    null
+            );
+            g.drawImage(
+                    Hook.IMAGE_GROUND,
+                    0,
+                    214,
                     null
             );
         } else {
