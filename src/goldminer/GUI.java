@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class GUI {
-    final static long END_TIME = 1 * 1000;
+    final static long END_TIME = 60 * 1000;
     final static Font FONT = ResTools.getFontFromRes("/xkcd.otf");
 
     final Dimension vDim = new Dimension(1920, 1080);
@@ -172,9 +172,15 @@ public class GUI {
             @Override
             public void keyPressed(KeyEvent e) {
                 long time = State.getTimeSync();
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    State.getInstance().move(GUI.this.playerID, time);
-                    GUI.this.connection.sendMove(GUI.this.playerID, time);
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_DOWN:
+                        State.getInstance().move(GUI.this.playerID, time);
+                        GUI.this.connection.sendMove(GUI.this.playerID, time);
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        State.pause(time + 300);
+                        GUI.this.connection.sendPause(time + 300);
+                        break;
                 }
             }
         });

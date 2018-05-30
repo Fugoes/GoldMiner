@@ -22,20 +22,25 @@ public class Connections {
         Runnable gameStartFunction;
         Supplier<String> stateSupplier;
         Consumer<String> stateConsumer;
+        Consumer<Long> pauseFunction;
 
         ConnectionBase(boolean isMaster,
                        BiConsumer<Integer, Long> receiveMoveCallback,
                        Runnable gameStartFunction,
                        Supplier<String> stateSupplier,
-                       Consumer<String> stateConsumer) {
+                       Consumer<String> stateConsumer,
+                       Consumer<Long> pauseFunction) {
             this.isMaster = isMaster;
             this.receiveMoveCallback = receiveMoveCallback;
             this.gameStartFunction = gameStartFunction;
             this.stateSupplier = stateSupplier;
             this.stateConsumer = stateConsumer;
+            this.pauseFunction = pauseFunction;
         }
 
         abstract void sendMove(int playerID, long time);
+
+        abstract void sendPause(long time);
 
         abstract String receiveOneLine();
 
@@ -47,6 +52,9 @@ public class Connections {
                 switch (args[0]) {
                     case "MOVE":
                         this.receiveMoveCallback.accept(Integer.valueOf(args[1]), Long.valueOf(args[2]));
+                        break;
+                    case "PAUSE":
+                        this.pauseFunction.accept(Long.valueOf(args[1]));
                         break;
                     default:
                         break;
@@ -66,8 +74,9 @@ public class Connections {
                   BiConsumer<Integer, Long> receiveMoveCallback,
                   Runnable gameStartFunction,
                   Supplier<String> stateSupplier,
-                  Consumer<String> stateConsumer) {
-            super(true, receiveMoveCallback, gameStartFunction, stateSupplier, stateConsumer);
+                  Consumer<String> stateConsumer,
+                  Consumer<Long> pauseFunction) {
+            super(true, receiveMoveCallback, gameStartFunction, stateSupplier, stateConsumer, pauseFunction);
             this.port = port;
             new Thread(() -> {
                 this.waitForUp();
@@ -87,6 +96,11 @@ public class Connections {
         @Override
         void sendMove(int playerID, long time) {
             this.out.println("MOVE," + playerID + "," + time);
+        }
+
+        @Override
+        void sendPause(long time) {
+            this.out.println("PAUSE," + time);
         }
 
         @Override
@@ -119,8 +133,9 @@ public class Connections {
                 BiConsumer<Integer, Long> receiveMoveCallback,
                 Runnable gameStartFunction,
                 Supplier<String> stateSupplier,
-                Consumer<String> stateConsumer) {
-            super(false, receiveMoveCallback, gameStartFunction, stateSupplier, stateConsumer);
+                Consumer<String> stateConsumer,
+                Consumer<Long> pauseFunction) {
+            super(false, receiveMoveCallback, gameStartFunction, stateSupplier, stateConsumer, pauseFunction);
             this.addr = addr;
             this.port = port;
             new Thread(() -> {
@@ -136,6 +151,11 @@ public class Connections {
         @Override
         void sendMove(int playerID, long time) {
             this.out.println("MOVE," + playerID + "," + time);
+        }
+
+        @Override
+        void sendPause(long time) {
+            this.out.println("PAUSE," + time);
         }
 
         @Override

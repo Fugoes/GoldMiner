@@ -15,6 +15,7 @@ public class State {
     }
 
     private long zeroTime;
+    private long pauseTime = Long.MAX_VALUE;
 
     Vector<Entities.EntityBase> entities = new Vector<>();
     Hook[] hooks = new Hook[2];
@@ -219,6 +220,7 @@ public class State {
             result.hooks[0] = FP.liftExp(() -> State.instance.hooks[0].clone()).get().get();
             result.hooks[1] = FP.liftExp(() -> State.instance.hooks[1].clone()).get().get();
             result.zeroTime = State.instance.zeroTime;
+            result.pauseTime = State.instance.pauseTime;
         }
         return result;
     }
@@ -258,7 +260,8 @@ public class State {
     }
 
     public long getTime() {
-        return Calendar.getInstance().getTimeInMillis() - this.zeroTime;
+        long time = Calendar.getInstance().getTimeInMillis() - this.zeroTime;
+        return time < this.pauseTime ? time : this.pauseTime;
     }
 
     public static long getTimeSync() {
@@ -267,6 +270,14 @@ public class State {
             time = State.instance.getTime();
         }
         return time;
+    }
+
+    public static void pause(long time) {
+        synchronized (State.instance) {
+            if (State.instance.pauseTime == Long.MAX_VALUE) {
+                State.instance.pauseTime = time;
+            }
+        }
     }
 
     private void moveEmpty(Hook hook) {

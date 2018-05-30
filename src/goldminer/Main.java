@@ -41,7 +41,8 @@ public class Main {
                         State.getInstance().randomInit();
                         return State.getInstance().dumpEntities();
                     },
-                    null
+                    null,
+                    State::pause
             );
         } else {
             gui.connection = new Connections.TCPClient(
@@ -56,7 +57,8 @@ public class Main {
                     s -> {
                         State.getInstance().init();
                         State.getInstance().loadEntities(s.split(","));
-                    }
+                    },
+                    State::pause
             );
         }
     }
