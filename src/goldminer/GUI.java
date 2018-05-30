@@ -72,12 +72,7 @@ public class GUI {
     void beginWelcomeScreen() {
         final long zeroTime = Calendar.getInstance().getTimeInMillis();
         this.frame.setPaintFunction(g -> {
-            int width, height;
             Rectangle2D geom;
-            synchronized (GUI.this.rDim) {
-                width = GUI.this.rDim.width;
-                height = GUI.this.rDim.height;
-            }
             Graphics bufferedG = GUI.this.image.getGraphics();
             bufferedG.setColor(Color.WHITE);
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
@@ -104,18 +99,13 @@ public class GUI {
                     GUI.this.vDim.width - (int) geom.getWidth() - 10,
                     GUI.this.vDim.height - 10
             );
-            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+            GUI.this.drawBufferToScreen();
         });
     }
 
     void beginWaitingConnectionScreen() {
         this.frame.setPaintFunction(g -> {
-            int width, height;
             Rectangle2D geom;
-            synchronized (GUI.this.rDim) {
-                width = GUI.this.rDim.width;
-                height = GUI.this.rDim.height;
-            }
             Graphics bufferedG = GUI.this.image.getGraphics();
             bufferedG.setColor(Color.WHITE);
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
@@ -134,18 +124,13 @@ public class GUI {
                     GUI.this.vDim.width - (int) geom.getWidth() - 10,
                     GUI.this.vDim.height - 10
             );
-            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+            GUI.this.drawBufferToScreen();
         });
     }
 
     void beginCountDownScreen() {
         final long time = Calendar.getInstance().getTimeInMillis();
         this.frame.setPaintFunction(g -> {
-            int width, height;
-            synchronized (GUI.this.rDim) {
-                width = GUI.this.rDim.width;
-                height = GUI.this.rDim.height;
-            }
             Graphics bufferedG = GUI.this.image.getGraphics();
             bufferedG.setColor(Color.WHITE);
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
@@ -156,17 +141,12 @@ public class GUI {
             String s = Integer.toString(n);
             Rectangle2D geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
             bufferedG.drawString(s, 1920 / 2 - (int) geom.getWidth() / 2, 1080 / 2);
-            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+            GUI.this.drawBufferToScreen();
         });
     }
 
     void beginGameScreen() {
         this.frame.setPaintFunction(g -> {
-            int width, height;
-            synchronized (GUI.this.rDim) {
-                width = GUI.this.rDim.width;
-                height = GUI.this.rDim.height;
-            }
             Graphics bufferedG = GUI.this.image.getGraphics();
             bufferedG.setColor(Color.WHITE);
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
@@ -209,7 +189,7 @@ public class GUI {
                 s = "-" + Long.toString(60 - time / 1000 >= 0 ? 60 - time / 1000 : 0) + " S";
                 geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
                 bufferedG.drawString(s, 1920 / 2 - (int) geom.getWidth() / 2, 60);
-                g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+                GUI.this.drawBufferToScreen();
             }
         });
         this.frame.setKeyAdapter(new KeyAdapter() {
@@ -245,11 +225,6 @@ public class GUI {
         this.frame.setPaintFunction(g -> {
             Rectangle2D geom;
             String s;
-            int width, height;
-            synchronized (GUI.this.rDim) {
-                width = GUI.this.rDim.width;
-                height = GUI.this.rDim.height;
-            }
             Graphics bufferedG = GUI.this.image.getGraphics();
             bufferedG.setColor(Color.WHITE);
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
@@ -281,7 +256,7 @@ public class GUI {
             geom = bufferedG.getFontMetrics().getStringBounds(s, bufferedG);
             bufferedG.drawString(s, GUI.this.vDim.width / 2 - (int) (geom.getWidth() / 2),
                     GUI.this.vDim.height / 2 + 3 * (int) (geom.getHeight()));
-            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+            GUI.this.drawBufferToScreen();
         });
         this.frame.setKeyAdapter(new KeyAdapter() {
             @Override
@@ -410,11 +385,6 @@ public class GUI {
         this.frame.setPaintFunction(g -> {
             Rectangle2D geom;
             String s;
-            int width, height;
-            synchronized (GUI.this.rDim) {
-                width = GUI.this.rDim.width;
-                height = GUI.this.rDim.height;
-            }
             Graphics bufferedG = GUI.this.image.getGraphics();
             bufferedG.setColor(Color.WHITE);
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
@@ -446,8 +416,7 @@ public class GUI {
             GUI.drawString(bufferedG, historyOfPlayerScores,
                     GUI.this.vDim.width * 3 / 4 - ((t1.t1 + t2.t1 + 50) / 2) + t1.t1 + 50,
                     GUI.this.vDim.height / 2 - ((int) geom.getHeight()) * 5 / 2);
-
-            g.drawImage(GUI.this.image, 0, 0, width, height, this.frame);
+            GUI.this.drawBufferToScreen();
         });
         this.frame.setKeyAdapter(new KeyAdapter() {
             @Override
@@ -489,6 +458,15 @@ public class GUI {
         public void paint(Graphics g) {
             this.paintFunctionRef.get().accept(g);
         }
+    }
+
+    private void drawBufferToScreen() {
+        int width, height;
+        synchronized (this.rDim) {
+            width = this.rDim.width;
+            height = this.rDim.height;
+        }
+        this.frame.getGraphics().drawImage(GUI.this.image, 0, 0, width, height, this.frame);
     }
 
     private boolean adjustToVDimRatio(Dimension dim) {
