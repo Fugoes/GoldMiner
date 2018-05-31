@@ -52,6 +52,20 @@ public class Hook implements Cloneable, GUI.Paintable {
     }
 
     @Override
+    protected Hook clone() throws CloneNotSupportedException {
+        Hook result = (Hook) super.clone();
+        result.playerID = this.playerID;
+        result.x = this.x;
+        result.y = this.y;
+        result.pendingBeginTime = this.pendingBeginTime;
+        result.pendingIntersectTime = this.pendingIntersectTime;
+        result.pendingEndTime = this.pendingEndTime;
+        result.pendingRad = this.pendingRad;
+        result.pendingEntityId = this.pendingEntityId;
+        return result;
+    }
+
+    @Override
     public void paint(Graphics g, State state, long time) {
         if (this.playerID == 0) {
             g.drawImage(
@@ -145,19 +159,6 @@ public class Hook implements Cloneable, GUI.Paintable {
                 g.drawImage(image, this.x - c.x, this.y - c.y, null);
             }
         }
-    }
-
-    @Override
-    protected Hook clone() throws CloneNotSupportedException {
-        Hook result = (Hook) super.clone();
-        result.playerID = this.playerID;
-        result.x = this.x;
-        result.y = this.y;
-        result.pendingBeginTime = this.pendingBeginTime;
-        result.pendingIntersectTime = this.pendingIntersectTime;
-        result.pendingEndTime = this.pendingEndTime;
-        result.pendingRad = this.pendingRad;
-        return result;
     }
 
     double getRadByTime(long time) {

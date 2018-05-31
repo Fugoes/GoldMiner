@@ -196,7 +196,7 @@ public class GUI {
                 long realTime = Calendar.getInstance().getTimeInMillis();
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_DOWN:
-                        State.getInstance().move(GUI.this.playerID, time);
+                        State.move(GUI.this.playerID, time);
                         GUI.this.connection.sendMove(GUI.this.playerID, time);
                         break;
                     case KeyEvent.VK_SPACE:

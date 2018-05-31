@@ -6,10 +6,11 @@ import util.Tuple2;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class State {
-    private final static State instance = new State();
+    private final static AtomicReference<State> instanceRef = new AtomicReference<>(new State());
 
     private State() {
     }
@@ -20,41 +21,43 @@ public class State {
     Vector<Entities.EntityBase> entities = new Vector<>();
     Hook[] hooks = new Hook[2];
 
-    public void init() {
-        this.hooks[0] = new Hook(0, 860, 200);
-        this.hooks[1] = new Hook(1, 1060, 200);
+    public static void init() {
+        State s = State.instanceRef.get();
+        s.hooks[0] = new Hook(0, 860, 200);
+        s.hooks[1] = new Hook(1, 1060, 200);
     }
 
-    public void randomInit() {
+    public static void randomInit() {
+        State s = State.instanceRef.get();
         Random random = new Random(Calendar.getInstance().getTimeInMillis());
         int count = 0;
         Entities.EntityBase newEntity = null;
         while (true) {
-            if (this.entities.size() == 14) {
+            if (s.entities.size() == 14) {
                 return;
             }
-            switch (this.entities.size()) {
+            switch (s.entities.size()) {
                 case 0:
                     newEntity = new Entities.Pig(
-                            this.randomX(Entities.Pig.RADIUS, random),
+                            s.randomX(Entities.Pig.RADIUS, random),
                             320
                     );
                     break;
                 case 1:
                     newEntity = new Entities.Pig(
-                            this.randomX(Entities.Pig.RADIUS, random),
+                            s.randomX(Entities.Pig.RADIUS, random),
                             1080 - Entities.Pig.RADIUS - 25
                     );
                     break;
                 case 2:
                     if (random.nextBoolean()) {
                         newEntity = new Entities.Pig(
-                                this.randomX(Entities.Pig.RADIUS, random),
+                                s.randomX(Entities.Pig.RADIUS, random),
                                 1080 - 3 * Entities.Pig.RADIUS - 30
                         );
                     } else {
                         newEntity = new Entities.Pig(
-                                this.randomX(Entities.Pig.RADIUS, random),
+                                s.randomX(Entities.Pig.RADIUS, random),
                                 320 + 2 * Entities.Pig.RADIUS + 6
                         );
                     }
@@ -64,65 +67,54 @@ public class State {
                 case 5:
                 case 6:
                     newEntity = new Entities.Rock(
-                            this.randomX(Entities.Rock.RADIUS, random),
-                            this.randomY(Entities.Rock.RADIUS, random)
+                            s.randomX(Entities.Rock.RADIUS, random),
+                            s.randomY(Entities.Rock.RADIUS, random)
                     );
                     break;
                 case 7:
                     newEntity = new Entities.GoldMax(
-                            this.randomX(Entities.GoldMax.RADIUS, random),
-                            this.randomY(Entities.GoldMax.RADIUS, random)
+                            s.randomX(Entities.GoldMax.RADIUS, random),
+                            s.randomY(Entities.GoldMax.RADIUS, random)
                     );
                     break;
                 case 8:
                 case 9:
                     newEntity = new Entities.GoldMid(
-                            this.randomX(Entities.GoldMid.RADIUS, random),
-                            this.randomY(Entities.GoldMid.RADIUS, random)
+                            s.randomX(Entities.GoldMid.RADIUS, random),
+                            s.randomY(Entities.GoldMid.RADIUS, random)
                     );
                     break;
                 case 10:
                 case 11:
                     newEntity = new Entities.GoldMin(
-                            this.randomX(Entities.GoldMin.RADIUS, random),
-                            this.randomY(Entities.GoldMin.RADIUS, random)
+                            s.randomX(Entities.GoldMin.RADIUS, random),
+                            s.randomY(Entities.GoldMin.RADIUS, random)
                     );
                     break;
                 case 12:
                 case 13:
                     newEntity = new Entities.Pocket(
-                            this.randomX(Entities.Pocket.RADIUS, random),
-                            this.randomY(Entities.Pocket.RADIUS, random),
+                            s.randomX(Entities.Pocket.RADIUS, random),
+                            s.randomY(Entities.Pocket.RADIUS, random),
                             random.nextInt(1000)
                     );
                     break;
             }
-            if (this.isEntitiesConflict(newEntity)) {
+            if (s.isEntitiesConflict(newEntity)) {
                 count++;
                 if (count == 500) {
-                    this.entities.remove(this.entities.size() - 1);
+                    s.entities.remove(s.entities.size() - 1);
                     count = 0;
                 }
             } else {
-                this.entities.add(newEntity);
+                s.entities.add(newEntity);
                 count = 0;
             }
         }
     }
 
-    public String dumpEntities() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("ENTITIES");
-        for (Entities.EntityBase entity : this.entities) {
-            stringBuilder.append("," + entity.getName() + "," + entity.x + "," + entity.y);
-            if (entity instanceof Entities.Pocket) {
-                stringBuilder.append("," + entity.score);
-            }
-        }
-        return stringBuilder.toString();
-    }
-
-    public void loadEntities(String[] strings) {
+    public static void loadEntities(String[] strings) {
+        State s = State.instanceRef.get();
         int i = 1;
         Entities.EntityBase entity = null;
         while (i < strings.length) {
@@ -171,63 +163,103 @@ public class State {
                     i += 3;
                     break;
             }
-            this.entities.add(entity);
+            s.entities.add(entity);
         }
     }
 
-    public void move(int playerID, long time) {
-        synchronized (this) {
-            Hook hook = this.hooks[playerID];
-            Hook anotherHook = this.hooks[1 - playerID];
+    public String dumpEntities() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("ENTITIES");
+        for (Entities.EntityBase entity : this.entities) {
+            stringBuilder.append("," + entity.getName() + "," + entity.x + "," + entity.y);
+            if (entity instanceof Entities.Pocket) {
+                stringBuilder.append("," + entity.score);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public static void move(int playerID, long time) {
+        synchronized (State.instanceRef) {
+            State s = State.copy();
+            Hook hook = s.hooks[playerID];
+            Hook anotherHook = s.hooks[1 - playerID];
             if (time >= hook.pendingEndTime + 200) {
                 hook.pendingRad = hook.getRadByTime(time);
                 hook.pendingBeginTime = time;
-                Vector<Tuple2<Long, Integer>> rs = this.getPossibleEntities(hook);
+                Vector<Tuple2<Long, Integer>> rs = s.getPossibleEntities(hook);
                 if (rs.size() == 0) {
-                    this.moveEmpty(hook);
+                    s.moveEmpty(hook);
                 } else {
                     if (anotherHook.pendingEntityId == rs.get(0).t2) {
                         if (anotherHook.pendingIntersectTime < rs.get(0).t1 ||
                                 (anotherHook.pendingIntersectTime == rs.get(0).t1 && playerID == 0)) {
                             if (rs.size() > 1) {
-                                this.moveNonEmpty(hook, rs.get(1));
+                                s.moveNonEmpty(hook, rs.get(1));
                             } else {
-                                this.moveEmpty(hook);
+                                s.moveEmpty(hook);
                             }
                         } else {
-                            this.moveNonEmpty(hook, rs.get(0));
-                            Vector<Tuple2<Long, Integer>> rsp = this.getPossibleEntities(anotherHook);
+                            s.moveNonEmpty(hook, rs.get(0));
+                            Vector<Tuple2<Long, Integer>> rsp = s.getPossibleEntities(anotherHook);
                             assert rsp.size() >= 1;
                             if (rsp.size() == 1) {
-                                this.moveEmpty(anotherHook);
+                                s.moveEmpty(anotherHook);
                             } else {
-                                this.moveNonEmpty(anotherHook, rsp.get(1));
+                                s.moveNonEmpty(anotherHook, rsp.get(1));
                             }
                         }
                     } else {
-                        this.moveNonEmpty(hook, rs.get(0));
+                        s.moveNonEmpty(hook, rs.get(0));
                     }
                 }
             }
+            State.instanceRef.set(s);
+        }
+    }
+
+    public static void start() {
+        synchronized (State.instanceRef) {
+            State s = State.copy();
+            s.zeroTime = Calendar.getInstance().getTimeInMillis();
+            State.instanceRef.set(s);
+        }
+    }
+
+    public static void pause(long time) {
+        synchronized (State.instanceRef) {
+            State s = State.copy();
+            if (s.pauseTime == Long.MAX_VALUE) {
+                s.pauseTime = time;
+            }
+            State.instanceRef.set(s);
+        }
+    }
+
+    public static void resume() {
+        synchronized (State.instanceRef) {
+            State s = State.copy();
+            s.zeroTime = Calendar.getInstance().getTimeInMillis() - s.pauseTime;
+            s.pauseTime = Long.MAX_VALUE;
+            State.instanceRef.set(s);
         }
     }
 
     public static State getSnapshot() {
-        State result = new State();
-        synchronized (State.instance) {
-            for (Entities.EntityBase entity : State.instance.entities) {
-                result.entities.add(FP.liftExp(entity::clone).get().get());
-            }
-            result.hooks[0] = FP.liftExp(() -> State.instance.hooks[0].clone()).get().get();
-            result.hooks[1] = FP.liftExp(() -> State.instance.hooks[1].clone()).get().get();
-            result.zeroTime = State.instance.zeroTime;
-            result.pauseTime = State.instance.pauseTime;
-        }
-        return result;
+        return State.instanceRef.get();
     }
 
-    public static State getInstance() {
-        return State.instance;
+    private static State copy() {
+        State result = new State();
+        State s = State.instanceRef.get();
+        for (Entities.EntityBase entity : s.entities) {
+            result.entities.add(FP.liftExp(entity::clone).get().get());
+        }
+        result.hooks[0] = FP.liftExp(() -> s.hooks[0].clone()).get().get();
+        result.hooks[1] = FP.liftExp(() -> s.hooks[1].clone()).get().get();
+        result.zeroTime = s.zeroTime;
+        result.pauseTime = s.pauseTime;
+        return result;
     }
 
     public int[] getScores(long time) {
@@ -256,31 +288,12 @@ public class State {
         }
     }
 
-    public void start() {
-        this.zeroTime = Calendar.getInstance().getTimeInMillis();
-    }
-
     public static long getTimeSync() {
         long time;
-        synchronized (State.instance) {
-            time = State.instance.getTime();
+        synchronized (State.instanceRef) {
+            time = State.instanceRef.get().getTime();
         }
         return time;
-    }
-
-    public static void pause(long time) {
-        synchronized (State.instance) {
-            if (State.instance.pauseTime == Long.MAX_VALUE) {
-                State.instance.pauseTime = time;
-            }
-        }
-    }
-
-    public static void resume() {
-        synchronized (State.instance) {
-            State.instance.zeroTime = Calendar.getInstance().getTimeInMillis() - State.instance.pauseTime;
-            State.instance.pauseTime = Long.MAX_VALUE;
-        }
     }
 
     private long getTime() {

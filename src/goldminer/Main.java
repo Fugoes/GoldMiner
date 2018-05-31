@@ -7,9 +7,9 @@ public class Main {
         if (argv.length == 0) {
             GUI gui = new GUI(0);
             gui.startTimerTask(60);
-            State.getInstance().init();
-            State.getInstance().randomInit();
-            State.getInstance().start();
+            State.init();
+            State.randomInit();
+            State.start();
             gui.beginGameScreen();
             return;
         }
@@ -31,15 +31,15 @@ public class Main {
         if (playerID == 0) {
             gui.connection = new Connections.TCPServer(
                     Integer.valueOf(argv[0]),
-                    (id, time) -> State.getInstance().move(id, time),
+                    State::move,
                     () -> {
                         gui.beginGameScreen();
-                        State.getInstance().start();
+                        State.start();
                     },
                     () -> {
-                        State.getInstance().init();
-                        State.getInstance().randomInit();
-                        return State.getInstance().dumpEntities();
+                        State.init();
+                        State.randomInit();
+                        return State.getSnapshot().dumpEntities();
                     },
                     null,
                     State::pause,
@@ -53,15 +53,15 @@ public class Main {
             gui.connection = new Connections.TCPClient(
                     argv[0],
                     Integer.valueOf(argv[1]),
-                    (id, time) -> State.getInstance().move(id, time),
+                    State::move,
                     () -> {
                         gui.beginGameScreen();
-                        State.getInstance().start();
+                        State.start();
                     },
                     null,
                     s -> {
-                        State.getInstance().init();
-                        State.getInstance().loadEntities(s.split(","));
+                        State.init();
+                        State.loadEntities(s.split(","));
                     },
                     State::pause,
                     State::resume,
