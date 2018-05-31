@@ -54,9 +54,6 @@ public class GUI {
             @Override
             public void componentResized(ComponentEvent e) {
                 Dimension dim = GUI.this.frame.getSize();
-                if (!GUI.this.adjustToVDimRatio(dim)) {
-                    GUI.this.frame.setSize(dim);
-                }
                 synchronized (GUI.this.rDim) {
                     GUI.this.rDim.width = dim.width;
                     GUI.this.rDim.height = dim.height;
@@ -462,37 +459,29 @@ public class GUI {
 
     private void drawBufferToScreen() {
         int width, height;
+        int x, y;
+        Graphics g = this.frame.getGraphics();
+        g.setColor(Color.WHITE);
         synchronized (this.rDim) {
-            width = this.rDim.width;
-            height = this.rDim.height;
+            x = this.rDim.width;
+            y = this.rDim.height;
         }
-        this.frame.getGraphics().drawImage(GUI.this.image, 0, 0, width, height, this.frame);
-    }
-
-    private boolean adjustToVDimRatio(Dimension dim) {
-        if (dim.width * vDim.height < dim.height * vDim.width) {
-            int height;
-            if (dim.width * vDim.height % vDim.width == 0) {
-                height = dim.width * vDim.height / vDim.width;
-            } else {
-                height = dim.width * vDim.height / vDim.width + 1;
-            }
-            if (dim.height == height) {
-                return true;
-            } else {
-                dim.height = height;
-                return false;
-            }
-        } else if (dim.width * vDim.height > dim.height * vDim.width) {
-            if (dim.width == dim.height * vDim.width / vDim.height) {
-                return true;
-            } else {
-                dim.width = dim.height * vDim.width / vDim.height;
-                return false;
-            }
+        if (x * 1080 > y * 1920) {
+            width = y * 1920 / 1080;
+            height = y;
+            x = (x - width) / 2;
+            y = 0;
+            g.fillRect(0, 0, x, height);
+            g.fillRect(x + width, 0, x, height);
         } else {
-            return true;
+            width = x;
+            height = x * 1080 / 1920;
+            x = 0;
+            y = (y - height) / 2;
+            g.fillRect(0, 0, width, y);
+            g.fillRect(0, y + height, width, y);
         }
+        this.frame.getGraphics().drawImage(GUI.this.image, x, y, width, height, this.frame);
     }
 
     private static void drawString(Graphics g, String s, int x, int y) {
