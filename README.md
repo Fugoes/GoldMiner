@@ -10,16 +10,16 @@ This project is a two players online gold miner game written in Java. I wrote it
 
 ```
 # Player Zero
-java -jar GoldMiner.jar <IP Address> <Port Number> <FPS>
-# Player One
 java -jar GoldMiner.jar <Port Number> <FPS>
+# Player One
+java -jar GoldMiner.jar <IP Address> <Port Number> <FPS>
 ```
 For example, if you want to play it from localhost:
 ```
 # Player Zero
-java -jar GoldMiner.jar 127.0.0.1 9999 60
-# Player One
 java -jar GoldMiner.jar 9999 60
+# Player One
+java -jar GoldMiner.jar 127.0.0.1 9999 60
 ```
 Press `DOWN` key to move, press `SPACE` key to pause or resume the game.
 
