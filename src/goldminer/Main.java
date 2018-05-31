@@ -4,9 +4,11 @@ import util.FP;
 
 public class Main {
     public static void main(String[] argv) {
-        if (argv.length == 0) {
+        int FPS = Integer.valueOf(argv[argv.length - 1]);
+
+        if (argv.length == 1) {
             GUI gui = new GUI(0);
-            gui.startTimerTask(60);
+            gui.startTimerTask(FPS);
             State.init();
             State.randomInit();
             State.start();
@@ -16,15 +18,15 @@ public class Main {
 
         int playerID = -1;
         switch (argv.length) {
-            case 1:
+            case 2:
                 playerID = 0;
                 break;
-            case 2:
+            case 3:
                 playerID = 1;
                 break;
         }
         GUI gui = new GUI(playerID);
-        gui.startTimerTask(60);
+        gui.startTimerTask(FPS);
         gui.beginWelcomeScreen();
         FP.liftExp(() -> Thread.sleep(5000)).run();
         gui.beginWaitingConnectionScreen();

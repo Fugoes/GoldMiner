@@ -12,6 +12,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -23,10 +25,17 @@ public class GUI {
     final static BufferedImage IMAGE_ARROW_LEFT
             = ResTools.shrinkTo(ResTools.getImageFromRes("/arrow.png"), 80, 50);
     final static BufferedImage IMAGE_ARROW_RIGHT = ResTools.flipByY(IMAGE_ARROW_LEFT);
+    final static float blurData[] = {
+            0.0625f, 0.1250f, 0.0625f,
+            0.1250f, 0.2500f, 0.1250f,
+            0.0625f, 0.1250f, 0.0625f
+    };
+    final static ConvolveOp blurConvolveOp = new ConvolveOp(new Kernel(3, 3, blurData), ConvolveOp.EDGE_NO_OP, null);
 
     final Dimension vDim = new Dimension(1920, 1080);
     final Dimension rDim = new Dimension(1920, 1080);
     final BufferedImage image = new BufferedImage(vDim.width, vDim.height, BufferedImage.TYPE_INT_ARGB);
+    final BufferedImage blurImage = new BufferedImage(vDim.width, vDim.height, BufferedImage.TYPE_INT_ARGB);
     final java.util.Timer timer = new java.util.Timer();
     int playerID;
     Connections.ConnectionBase connection;
@@ -60,7 +69,7 @@ public class GUI {
                 }
             }
         });
-        this.frame.setSize(1000, 1000);
+        this.frame.setSize(1280, 720);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setVisible(true);
         this.playerID = playerID;
@@ -481,7 +490,8 @@ public class GUI {
             g.fillRect(0, 0, width, y);
             g.fillRect(0, y + height, width, y);
         }
-        this.frame.getGraphics().drawImage(GUI.this.image, x, y, width, height, this.frame);
+        GUI.blurConvolveOp.filter(this.image, this.blurImage);
+        this.frame.getGraphics().drawImage(this.blurImage, x, y, width, height, this.frame);
     }
 
     private static void drawString(Graphics g, String s, int x, int y) {
