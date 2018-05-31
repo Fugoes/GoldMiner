@@ -1,5 +1,6 @@
 package goldminer;
 
+import util.Coordinate;
 import util.FP;
 import util.ResTools;
 import util.Tuple2;
@@ -25,11 +26,7 @@ public class GUI {
     final static BufferedImage IMAGE_ARROW_LEFT
             = ResTools.shrinkTo(ResTools.getImageFromRes("/arrow.png"), 80, 50);
     final static BufferedImage IMAGE_ARROW_RIGHT = ResTools.flipByY(IMAGE_ARROW_LEFT);
-    final static float blurData[] = {
-            0.0625f, 0.1250f, 0.0625f,
-            0.1250f, 0.2500f, 0.1250f,
-            0.0625f, 0.1250f, 0.0625f
-    };
+    final static float blurData[] = {0.0625f, 0.1250f, 0.0625f, 0.1250f, 0.2500f, 0.1250f, 0.0625f, 0.1250f, 0.0625f};
     final static ConvolveOp blurConvolveOp = new ConvolveOp(new Kernel(3, 3, blurData), ConvolveOp.EDGE_NO_OP, null);
 
     final Dimension vDim = new Dimension(1920, 1080);
@@ -37,6 +34,7 @@ public class GUI {
     final BufferedImage image = new BufferedImage(vDim.width, vDim.height, BufferedImage.TYPE_INT_ARGB);
     final BufferedImage blurImage = new BufferedImage(vDim.width, vDim.height, BufferedImage.TYPE_INT_ARGB);
     final java.util.Timer timer = new java.util.Timer();
+
     int playerID;
     Connections.ConnectionBase connection;
 
@@ -62,7 +60,7 @@ public class GUI {
         this.frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                Dimension dim = GUI.this.frame.getSize();
+                Dimension dim = GUI.this.frame.getContentPane().getSize();
                 synchronized (GUI.this.rDim) {
                     GUI.this.rDim.width = dim.width;
                     GUI.this.rDim.height = dim.height;
@@ -469,7 +467,7 @@ public class GUI {
     private void drawBufferToScreen() {
         int width, height;
         int x, y;
-        Graphics g = this.frame.getGraphics();
+        Graphics g = this.frame.getContentPane().getGraphics();
         g.setColor(Color.WHITE);
         synchronized (this.rDim) {
             x = this.rDim.width;
@@ -491,7 +489,7 @@ public class GUI {
             g.fillRect(0, y + height, width, y);
         }
         GUI.blurConvolveOp.filter(this.image, this.blurImage);
-        this.frame.getGraphics().drawImage(this.blurImage, x, y, width, height, this.frame);
+        g.drawImage(this.blurImage, x, y, width, height, this.frame.getContentPane());
     }
 
     private static void drawString(Graphics g, String s, int x, int y) {
