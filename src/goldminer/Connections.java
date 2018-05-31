@@ -6,8 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -143,7 +142,8 @@ public class Connections {
 
         private void waitForUp() {
             try {
-                this.serverSocket = new ServerSocket(this.port);
+                this.serverSocket = new ServerSocket();
+                this.serverSocket.bind(new InetSocketAddress("0.0.0.0", this.port));
                 this.socket = this.serverSocket.accept();
                 this.out = new PrintWriter(this.socket.getOutputStream(), true);
                 this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
