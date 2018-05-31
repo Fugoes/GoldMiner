@@ -4,7 +4,6 @@ import util.FP;
 
 public class Main {
     public static void main(String[] argv) {
-        int FPS = Integer.valueOf(argv[argv.length - 1]);
         int playerID = -1;
         switch (argv.length) {
             case 2:
@@ -13,7 +12,12 @@ public class Main {
             case 3:
                 playerID = 1;
                 break;
+            default:
+                System.err.println("Wrong number of arguments!");
+                System.exit(0);
+                return;
         }
+        int FPS = Integer.valueOf(argv[argv.length - 1]);
         GUI gui = new GUI(playerID);
         gui.startTimerTask(FPS);
         gui.beginWelcomeScreen();
