@@ -5,17 +5,6 @@ import util.FP;
 public class Main {
     public static void main(String[] argv) {
         int FPS = Integer.valueOf(argv[argv.length - 1]);
-
-        if (argv.length == 1) {
-            GUI gui = new GUI(0);
-            gui.startTimerTask(FPS);
-            State.init();
-            State.randomInit();
-            State.start();
-            gui.beginGameScreen();
-            return;
-        }
-
         int playerID = -1;
         switch (argv.length) {
             case 2:
