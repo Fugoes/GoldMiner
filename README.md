@@ -29,4 +29,4 @@ The code of `Gold Miner` is licensed under the [WTFPL](http://www.wtfpl.net/). T
 
 ## Screenshots
 
-![Game Screen](artwork/screenshot.png)
+![Game Screen](artwork/game-screen.png)
