@@ -154,8 +154,8 @@ public class GUI {
             Graphics bufferedG = GUI.this.image.getGraphics();
             bufferedG.setColor(Color.WHITE);
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
-            long time = State.getTimeSync();
             State state = State.getSnapshot();
+            long time = state.getTime();
             {
                 Hook hook = state.hooks[GUI.this.playerID];
                 if (GUI.this.playerID == 0) {
@@ -199,8 +199,8 @@ public class GUI {
         this.frame.setKeyAdapter(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                long time = State.getTimeSync();
                 long realTime = Calendar.getInstance().getTimeInMillis();
+                long time = State.getSnapshot().getTime();
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_DOWN:
                         State.move(GUI.this.playerID, time);

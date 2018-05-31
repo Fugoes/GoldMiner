@@ -288,15 +288,7 @@ public class State {
         }
     }
 
-    public static long getTimeSync() {
-        long time;
-        synchronized (State.instanceRef) {
-            time = State.instanceRef.get().getTime();
-        }
-        return time;
-    }
-
-    private long getTime() {
+    public long getTime() {
         long time = Calendar.getInstance().getTimeInMillis() - this.zeroTime;
         return time < this.pauseTime ? time : this.pauseTime;
     }
