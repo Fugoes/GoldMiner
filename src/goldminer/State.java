@@ -260,11 +260,6 @@ public class State {
         this.zeroTime = Calendar.getInstance().getTimeInMillis();
     }
 
-    public long getTime() {
-        long time = Calendar.getInstance().getTimeInMillis() - this.zeroTime;
-        return time < this.pauseTime ? time : this.pauseTime;
-    }
-
     public static long getTimeSync() {
         long time;
         synchronized (State.instance) {
@@ -286,6 +281,11 @@ public class State {
             State.instance.zeroTime = Calendar.getInstance().getTimeInMillis() - State.instance.pauseTime;
             State.instance.pauseTime = Long.MAX_VALUE;
         }
+    }
+
+    private long getTime() {
+        long time = Calendar.getInstance().getTimeInMillis() - this.zeroTime;
+        return time < this.pauseTime ? time : this.pauseTime;
     }
 
     private void moveEmpty(Hook hook) {
