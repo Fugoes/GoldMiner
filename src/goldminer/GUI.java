@@ -84,7 +84,7 @@ public class GUI {
             bufferedG.fillRect(0, 0, GUI.this.vDim.width, GUI.this.vDim.height);
             bufferedG.setFont(GUI.FONT.deriveFont(Font.BOLD, 100));
             long time = Calendar.getInstance().getTimeInMillis() - zeroTime;
-            if (time < 5000) {
+            if (time < 3000) {
                 bufferedG.setColor(Color.BLACK);
             } else {
                 int t = (int) (255 - 255 * (5000 - time) / 2000.0);
