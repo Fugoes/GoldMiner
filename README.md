@@ -8,6 +8,7 @@ This project is a two players online gold miner game written in Java. I wrote it
 
 ## How to play
 
+This program could only run under GNU/Linux and Windows operating system. It is known to be unusable under macOS. You need JRE or JDK installed. Please browse https://github.com/Fugoes/GoldMiner/releases for the `GoldMiner.jar` file.
 ```
 # Player Zero
 java -jar GoldMiner.jar <Port Number> <FPS>
