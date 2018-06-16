@@ -5,6 +5,7 @@ import util.FP;
 import util.ResTools;
 import util.Tuple2;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -16,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -28,6 +30,17 @@ public class GUI {
     final static BufferedImage IMAGE_ARROW_RIGHT = ResTools.flipByY(IMAGE_ARROW_LEFT);
     final static float blurData[] = {0.0625f, 0.1250f, 0.0625f, 0.1250f, 0.2500f, 0.1250f, 0.0625f, 0.1250f, 0.0625f};
     final static ConvolveOp blurConvolveOp = new ConvolveOp(new Kernel(3, 3, blurData), ConvolveOp.EDGE_NO_OP, null);
+    static AudioInputStream HOOK_SOUND;
+
+    static {
+        try {
+            GUI.HOOK_SOUND = AudioSystem.getAudioInputStream(
+                    GUI.class.getClassLoader().getResource("freesound-xylophone-a3-by-juancamiloorjuela.wav")
+            );
+        } catch (IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
+    }
 
     final Dimension vDim = new Dimension(1920, 1080);
     final Dimension rDim = new Dimension(1920, 1080);
@@ -205,6 +218,17 @@ public class GUI {
                     case KeyEvent.VK_DOWN:
                         State.move(GUI.this.playerID, time);
                         GUI.this.connection.sendMove(GUI.this.playerID, time);
+                        try {
+                            Clip clip = AudioSystem.getClip();
+                            synchronized (GUI.HOOK_SOUND) {
+                                GUI.HOOK_SOUND.mark(Integer.MAX_VALUE);
+                                clip.open(GUI.HOOK_SOUND);
+                                GUI.HOOK_SOUND.reset();
+                            }
+                            clip.start();
+                        } catch (LineUnavailableException | IOException e1) {
+                            e1.printStackTrace();
+                        }
                         break;
                     case KeyEvent.VK_SPACE:
                         if (GUI.this.lastSpaceDownTime + 400 < realTime) {
