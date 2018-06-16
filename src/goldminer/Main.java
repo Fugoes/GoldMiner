@@ -28,8 +28,8 @@ public class Main {
                     Integer.valueOf(argv[0]),
                     State::move,
                     () -> {
-                        gui.beginGameScreen();
                         State.start();
+                        gui.beginGameScreen();
                     },
                     () -> {
                         State.init();
@@ -50,8 +50,8 @@ public class Main {
                     Integer.valueOf(argv[1]),
                     State::move,
                     () -> {
-                        gui.beginGameScreen();
                         State.start();
+                        gui.beginGameScreen();
                     },
                     null,
                     s -> {

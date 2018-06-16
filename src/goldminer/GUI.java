@@ -83,6 +83,19 @@ public class GUI {
         this.frame.setSize(1280, 720);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setVisible(true);
+        try {
+            AudioInputStream bgm = AudioSystem.getAudioInputStream(
+                    this.getClass().getResource("/soulmate.wav")
+            );
+            Clip clip = AudioSystem.getClip();
+            clip.open(bgm);
+            FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            control.setValue(-20.0f);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
         this.playerID = playerID;
     }
 

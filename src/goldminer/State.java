@@ -246,7 +246,9 @@ public class State {
     }
 
     public static State getSnapshot() {
-        return State.instanceRef.get();
+        synchronized (State.instanceRef) {
+            return State.instanceRef.get();
+        }
     }
 
     private static State copy() {
