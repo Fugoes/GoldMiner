@@ -25,6 +25,7 @@ public class Connections {
         Consumer<Long> pauseFunction;
         Runnable resumeFunction;
         Runnable countDownFunction;
+        Runnable spaceFunction;
 
         ConnectionBase(boolean isMaster,
                        BiConsumer<Integer, Long> receiveMoveCallback,
@@ -33,7 +34,8 @@ public class Connections {
                        Consumer<String> stateConsumer,
                        Consumer<Long> pauseFunction,
                        Runnable resumeFunction,
-                       Runnable countDownFunction) {
+                       Runnable countDownFunction,
+                       Runnable spaceFunction) {
             this.isMaster = isMaster;
             this.receiveMoveCallback = receiveMoveCallback;
             this.gameStartFunction = gameStartFunction;
@@ -42,6 +44,7 @@ public class Connections {
             this.pauseFunction = pauseFunction;
             this.resumeFunction = resumeFunction;
             this.countDownFunction = countDownFunction;
+            this.spaceFunction = spaceFunction;
         }
 
         abstract void sendMove(int playerID, long time);
@@ -49,6 +52,8 @@ public class Connections {
         abstract void sendPause(long time);
 
         abstract void sendResume();
+
+        abstract void sendSpace();
 
         abstract Optional<String> receiveOneLine();
 
@@ -68,6 +73,9 @@ public class Connections {
                             break;
                         case "RESUME":
                             this.resumeFunction.run();
+                            break;
+                        case "SPACE":
+                            this.spaceFunction.run();
                             break;
                         default:
                             break;
@@ -93,7 +101,8 @@ public class Connections {
                   Consumer<String> stateConsumer,
                   Consumer<Long> pauseFunction,
                   Runnable resumeFunction,
-                  Runnable countDownFunction) {
+                  Runnable countDownFunction,
+                  Runnable spaceFunction) {
             super(
                     true,
                     receiveMoveCallback,
@@ -102,7 +111,8 @@ public class Connections {
                     stateConsumer,
                     pauseFunction,
                     resumeFunction,
-                    countDownFunction
+                    countDownFunction,
+                    spaceFunction
             );
             this.port = port;
             new Thread(() -> {
@@ -133,6 +143,11 @@ public class Connections {
         @Override
         void sendResume() {
             this.out.println("RESUME");
+        }
+
+        @Override
+        void sendSpace() {
+            this.out.println("SPACE");
         }
 
         @Override
@@ -169,7 +184,8 @@ public class Connections {
                 Consumer<String> stateConsumer,
                 Consumer<Long> pauseFunction,
                 Runnable resumeFunction,
-                Runnable countDownFunction) {
+                Runnable countDownFunction,
+                Runnable spaceFunction) {
             super(
                     false,
                     receiveMoveCallback,
@@ -178,7 +194,8 @@ public class Connections {
                     stateConsumer,
                     pauseFunction,
                     resumeFunction,
-                    countDownFunction
+                    countDownFunction,
+                    spaceFunction
             );
             this.addr = addr;
             this.port = port;
@@ -208,6 +225,11 @@ public class Connections {
         @Override
         void sendResume() {
             this.out.println("RESUME");
+        }
+
+        @Override
+        void sendSpace() {
+            this.out.println("SPACE");
         }
 
         @Override

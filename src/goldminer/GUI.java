@@ -244,18 +244,24 @@ public class GUI {
                         }
                         break;
                     case KeyEvent.VK_SPACE:
-                        if (GUI.this.lastSpaceDownTime + 400 < realTime) {
-                            GUI.this.lastSpaceDownTime = realTime;
-                            if (GUI.this.isPaused) {
-                                GUI.this.connection.sendResume();
-                                State.resume();
-                            } else {
-                                GUI.this.connection.sendPause(time + 300);
-                                State.pause(time + 300);
+                        if (GUI.this.playerID == 0) {
+                            synchronized (GUI.this) {
+                                if (GUI.this.lastSpaceDownTime + 400 < realTime) {
+                                    GUI.this.lastSpaceDownTime = realTime;
+                                    if (GUI.this.isPaused) {
+                                        GUI.this.connection.sendResume();
+                                        State.resume();
+                                    } else {
+                                        GUI.this.connection.sendPause(time + 300);
+                                        State.pause(time + 300);
+                                    }
+                                    GUI.this.isPaused = !GUI.this.isPaused;
+                                }
+                                break;
                             }
-                            GUI.this.isPaused = !GUI.this.isPaused;
+                        } else {
+                            GUI.this.connection.sendSpace();
                         }
-                        break;
                 }
             }
         });

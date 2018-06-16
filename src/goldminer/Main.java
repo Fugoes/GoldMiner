@@ -2,6 +2,8 @@ package goldminer;
 
 import util.FP;
 
+import java.util.Calendar;
+
 public class Main {
     public static void main(String[] argv) {
         int playerID = -1;
@@ -42,6 +44,23 @@ public class Main {
                     () -> {
                         gui.beginCountDownScreen();
                         FP.liftExp(() -> Thread.sleep(3000)).run();
+                    },
+                    () -> {
+                        long realTime = Calendar.getInstance().getTimeInMillis();
+                        long time = State.getSnapshot().getTime();
+                        synchronized (gui) {
+                            if (gui.lastSpaceDownTime + 400 < realTime) {
+                                gui.lastSpaceDownTime = realTime;
+                                if (gui.isPaused) {
+                                    gui.connection.sendResume();
+                                    State.resume();
+                                } else {
+                                    gui.connection.sendPause(time + 300);
+                                    State.pause(time + 300);
+                                }
+                                gui.isPaused = !gui.isPaused;
+                            }
+                        }
                     }
             );
         } else {
@@ -63,7 +82,8 @@ public class Main {
                     () -> {
                         gui.beginCountDownScreen();
                         FP.liftExp(() -> Thread.sleep(3000)).run();
-                    }
+                    },
+                    null
             );
         }
     }
