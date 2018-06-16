@@ -85,12 +85,12 @@ public class GUI {
         this.frame.setVisible(true);
         try {
             AudioInputStream bgm = AudioSystem.getAudioInputStream(
-                    this.getClass().getResource("/soulmate.wav")
+                    this.getClass().getResource("/bgm.wav")
             );
             Clip clip = AudioSystem.getClip();
             clip.open(bgm);
             FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            control.setValue(-20.0f);
+            control.setValue(-15.0f);
             clip.loop(Clip.LOOP_CONTINUOUSLY);
             clip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
